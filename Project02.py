@@ -16,7 +16,6 @@ import csv
 #checkTags takes in the current row and the file being written in
 #Uses a dictionary of all possible combinations of the tags
 #Prints out the 2nd half of the output from the current line
-
 def checkTags(row,file):
     length = len(row)
     lvl = {}
