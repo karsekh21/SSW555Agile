@@ -104,6 +104,10 @@ def saveInfo(listOfPpl,listOfFam,row):
                 listOfFam[-1]['DIV'] = " ".join(row[2:])
 
 
+def calculate_age(born,upTo):
+    return upTo.year - born.year - ((upTo.month, upTo.day) < (born.month, born.day))
+
+
 #readGED takes in the specified GED file from the user
 #Opens the GED file and store each indi and fam in a list
 #Reads the content of the GED file and writes the output on the answer.txt file
@@ -141,7 +145,12 @@ def readGED(fileName):
 
 
     for ppl in listOfPpl:
-        ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'],ppl['AGE'], ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
+        born = datetime.strptime(ppl['BIRT'],'%d %b %Y')
+        if (ppl['ALIVE']):
+            upTo = date.today()
+        else:
+            upTo = datetime.strptime(ppl['DEAT'],'%d %b %Y')
+        ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'],calculate_age(born,upTo), ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
 
     print ind_table
     print fam_table
