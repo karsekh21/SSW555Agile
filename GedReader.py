@@ -114,8 +114,10 @@ def readGED(fileName):
     from prettytable import PrettyTable
 
     ind_table=PrettyTable();
+    fam_table=PrettyTable();
 
     ind_table.field_names=["ID","Name","Gender","Birthday","Age","Alive","Death","Child","Spouse"]
+    fam_table.field_names = ["ID", "Married", "Divorced", "Husband ID", "Husband Name", "Wife ID", "Wife Name", "Children"]
 
     #Opens the file specified by the User
     rfile = open(fileName,'r')
@@ -132,7 +134,7 @@ def readGED(fileName):
 
 
     for fam in listOfFam:
-        print fam
+        fam_table.add_row([fam['ID'],fam['Married'],fam['Divorced'],fam['Husband ID'], fam['Husband Name'], fam['Wife ID'], fam['Wife Name'], fam['Children'])
 
     print'\n'
 
@@ -141,6 +143,7 @@ def readGED(fileName):
         ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'],ppl['AGE'], ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
 
     print ind_table
+    print fam_table
 
     rfile.close()
 
