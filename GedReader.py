@@ -103,7 +103,9 @@ def saveInfo(listOfPpl,listOfFam,row):
             elif listOfFam[-1]['DIV']:
                 listOfFam[-1]['DIV'] = " ".join(row[2:])
 
-
+#calculate_age takes in the year born and the year wanted to calc age
+#calculates the age of the current individual
+#returns the age of the current individual
 def calculate_age(born,upTo):
     return upTo.year - born.year - ((upTo.month, upTo.day) < (born.month, born.day))
 
@@ -137,22 +139,27 @@ def readGED(fileName):
         saveInfo(listOfPpl,listOfFam,currLine)
 
 
-
+    #Creates the table of all families
     for fam in listOfFam:
         fam_table.add_row([fam['ID'],fam['MARR'],fam['DIV'],fam['HUSB'], fam['HUSBNAME'], fam['WIFE'], fam['WIFENAME'], fam['CHIL']])
 
     print'\n'
 
-
+    #Creates the table of all Individuals
     for ppl in listOfPpl:
+        #Used to check the age of the Individuals
         born = datetime.strptime(ppl['BIRT'],'%d %b %Y')
         if (ppl['ALIVE']):
             upTo = date.today()
         else:
             upTo = datetime.strptime(ppl['DEAT'],'%d %b %Y')
-        ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'],calculate_age(born,upTo), ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
+        ppl['AGE'] = calculate_age(born,upTo)
+        ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'], ppl['AGE'], ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
 
+    print ('Individuals')
     print ind_table
+    print('\n')
+    print ('Families')
     print fam_table
 
     rfile.close()
