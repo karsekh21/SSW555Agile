@@ -13,6 +13,7 @@ import re
 import gzip
 import argparse
 import csv
+from datetime import datetime, date
 
 #checkTags takes in the current row and the file being written in
 #Uses a dictionary of all possible combinations of the tags
@@ -134,7 +135,7 @@ def readGED(fileName):
 
 
     for fam in listOfFam:
-        fam_table.add_row([fam['ID'],fam['Married'],fam['Divorced'],fam['Husband ID'], fam['Husband Name'], fam['Wife ID'], fam['Wife Name'], fam['Children'])
+        fam_table.add_row([fam['ID'],fam['MARR'],fam['DIV'],fam['HUSB'], fam['HUSBNAME'], fam['WIFE'], fam['WIFENAME'], fam['CHIL']])
 
     print'\n'
 
