@@ -1,7 +1,7 @@
 #!usr/bin/python
 
 
-#Calvin Han
+#Calvin Han, Matt Sirota, Karun Sekhar
 #CS 555
 #Project 03
 #I pledge my honor that I have abided by the stevens honor system
@@ -129,9 +129,7 @@ def readGED(fileName):
         #calls saveInfo
         saveInfo(listOfPpl,listOfFam,currLine)
 
-    print len(listOfFam)
-    print len(listOfPpl)
-    print listOfPpl
+
 
     for fam in listOfFam:
         print fam
@@ -140,7 +138,7 @@ def readGED(fileName):
 
 
     for ppl in listOfPpl:
-        print ppl
+        ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'],ppl['AGE'], ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
 
     print ind_table
 
