@@ -112,7 +112,6 @@ def saveInfo(listOfPpl,listOfFam,row):
 #calculates the age of the current individual
 #returns the age of the current individual
 def calculate_age(born,upTo):
-    print ((upTo.month, upTo.day) < (born.month, born.day))
     if((upTo.month, upTo.day) < (born.month, born.day)):
         return upTo.year - born.year - 1
     else:
