@@ -48,20 +48,6 @@ def checkTags(row,file):
         file.write('<-- '+row[0]+'|'+row[1]+'|'+'N|'+args+'\n')
 
 
-def checkDeatBeforeBirt(birth,death):
-    if birth == 'N/A':
-        return False
-    else:
-        if death == 'N/A':
-            return True
-        else:
-            birth = datetime.strptime(birth,'%d %b %Y')
-            death = datetime.strptime(death,'%d %b %Y')
-            return (calculate_age(birth,death)>=0)
-
-
-
-
 #saveInfo takes in the current row and the file being written in
 #Uses a dictionary of all possible combinations of the tags
 #Prints out the 2nd half of the output from the current line
@@ -116,8 +102,6 @@ def saveInfo(listOfPpl,listOfFam,row):
                 listOfFam[-1]['MARR'] = " ".join(row[2:])
             elif listOfFam[-1]['DIV']:
                 listOfFam[-1]['DIV'] = " ".join(row[2:])
-        else:
-            print('Error:Date was given but no tag before accepted it')
 
 #calculate_age takes in the year born and the year wanted to calc age
 #calculates the age of the current individual
