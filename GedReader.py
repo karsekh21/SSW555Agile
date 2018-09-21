@@ -110,10 +110,10 @@ def calculate_age(born,upTo):
     return upTo.year - born.year - ((upTo.month, upTo.day) < (born.month, born.day))
 
 #makes sure that every individual was married before they died
-def marriage_before_death(listOfPpl, listOfFam):
-    if(marriage<death)
-        return true;
-    return false;
+def marriage_before_death(marriage, death):
+    if(marriage<death):
+        return True;
+    return False;
 
 
 
@@ -149,7 +149,7 @@ def print_stuff(listOfPpl,listOfFam):
     print ('Families')
     print fam_table
 
-     for ppl in listOfPpl:
+    for ppl in listOfPpl:
         if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
             for fam in listOfFam:
                 if(fam['ID']==ppl['FAMS']):
