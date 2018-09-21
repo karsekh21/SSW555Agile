@@ -111,14 +111,9 @@ def calculate_age(born,upTo):
 
 #makes sure that every individual was married before they died
 def marriage_before_death(listOfPpl, listOfFam):
-    for ppl in listOfPpl:
-        if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
-            for fam in listOfFam:
-                if(fam['ID']==ppl['FAMS']):
-                    death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
-                    married=datetime.strptime(fam['MARR'], '%d %b %Y')
-                    if(death<married):
-                        print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his death date in Family ",ppl['FAMS'],"."
+    if(marriage<death)
+        return true;
+    return false;
 
 
 
@@ -153,6 +148,16 @@ def print_stuff(listOfPpl,listOfFam):
     print('\n')
     print ('Families')
     print fam_table
+
+     for ppl in listOfPpl:
+        if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
+            for fam in listOfFam:
+                if(fam['ID']==ppl['FAMS']):
+                    death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+                    married=datetime.strptime(fam['MARR'], '%d %b %Y')
+                    if(marriage_before_death(death, married)):
+                        print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his death date in Family ",ppl['FAMS'],"."
+
 
     marriage_before_death(listOfPpl,listOfFam)
 
