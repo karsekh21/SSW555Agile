@@ -159,8 +159,6 @@ def print_stuff(listOfPpl,listOfFam):
                         print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his death date in Family ",ppl['FAMS'],"."
 
 
-    marriage_before_death(listOfPpl,listOfFam)
-
 
 #readGED takes in the specified GED file from the user
 #Opens the GED file and store each indi and fam in a list
