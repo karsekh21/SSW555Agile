@@ -109,14 +109,20 @@ def saveInfo(listOfPpl,listOfFam,row):
 def calculate_age(born,upTo):
     return upTo.year - born.year - ((upTo.month, upTo.day) < (born.month, born.day))
 
+#makes sure that every individual was married before they died
+def marriage_before_death(listOfPpl, listOfFam):
+    for ppl in listOfPpl:
+        if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
+            for fam in listOfFam:
+                if(fam['ID']==ppl['FAMS']):
+                    death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+                    married=datetime.strptime(fam['MARR'], '%d %b %Y')
+                    if(death<married):
+                        print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his death date in Family ",ppl['FAMS'],"."
 
-#readGED takes in the specified GED file from the user
-#Opens the GED file and store each indi and fam in a list
-#Reads the content of the GED file and writes the output on the answer.txt file
-def readGED(fileName):
-    #list of INDI and Fam
-    listOfPpl = []
-    listOfFam = []
+
+
+def print_stuff(listOfPpl,listOfFam):
 
     from prettytable import PrettyTable
 
@@ -125,21 +131,7 @@ def readGED(fileName):
 
     ind_table.field_names=["ID","Name","Gender","Birthday","Age","Alive","Death","Child","Spouse"]
     fam_table.field_names = ["ID", "Married", "Divorced", "Husband ID", "Husband Name", "Wife ID", "Wife Name", "Children"]
-
-    #Opens the file specified by the User
-    rfile = open(fileName,'r')
-    #Reads each line and places each line in a list
-    lines = rfile.readlines()
-
-    #For loop goes through the entire lines list
-    for row in lines:
-        #Splits the string up by spaces
-        currLine =re.split(r'\s',row.strip())
-        #calls saveInfo
-        saveInfo(listOfPpl,listOfFam,currLine)
-
-
-    #Creates the table of all families
+     #Creates the table of all families
     for fam in listOfFam:
         fam_table.add_row([fam['ID'],fam['MARR'],fam['DIV'],fam['HUSB'], fam['HUSBNAME'], fam['WIFE'], fam['WIFENAME'], fam['CHIL']])
 
@@ -162,7 +154,28 @@ def readGED(fileName):
     print ('Families')
     print fam_table
 
+    marriage_before_death(listOfPpl,listOfFam)
+
+
+#readGED takes in the specified GED file from the user
+#Opens the GED file and store each indi and fam in a list
+#Reads the content of the GED file and writes the output on the answer.txt file
+def readGED(fileName,listOfPpl,listOfFam):
+
+    #Opens the file specified by the User
+    rfile = open(fileName,'r')
+    #Reads each line and places each line in a list
+    lines = rfile.readlines()
+
+    #For loop goes through the entire lines list
+    for row in lines:
+        #Splits the string up by spaces
+        currLine =re.split(r'\s',row.strip())
+        #calls saveInfo
+        saveInfo(listOfPpl,listOfFam,currLine)
+
     rfile.close()
+
 
 
 #Script accepts a Ged File
@@ -192,8 +205,15 @@ def main():
         return 0
 
     #calls function readGED to store info of user
-    readGED(args.file)
+    #list of INDI and Fam
+    listOfPpl = []
+    listOfFam = []
+    readGED(args.file, listOfPpl, listOfFam)
+
+    print_stuff(listOfPpl, listOfFam)
+
 
 
 if __name__ == "__main__":
     main()
+
