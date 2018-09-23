@@ -97,12 +97,17 @@ def saveInfo(listOfPpl,listOfFam,row):
             if listOfPpl[-1]['BIRT'] and not isinstance(listOfPpl[-1]['BIRT'], str):
                 if(checkDeatBeforeBirt(" ".join(row[2:]),listOfPpl[-1]['DEAT'])):
                     listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+                else:
+                    print("Error: A date for Death exist before a date for Birth")
+                    listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+                    
             elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
                 if(checkDeatBeforeBirt(listOfPpl[-1]['BIRT']," ".join(row[2:]))):
                     listOfPpl[-1]['DEAT'] = " ".join(row[2:])
                 else:
-                    listOfPpl[-1]['ALIVE'] = True
-                    listOfPpl[-1]['DEAT'] = 'N/A'
+                    print("Error: A date for Death exist before a date for Birth")
+                    listOfPpl[-1]['ALIVE'] = False
+                    listOfPpl[-1]['DEAT'] = " ".join(row[2:])
             elif listOfFam[-1]['MARR']:
                 listOfFam[-1]['MARR'] = " ".join(row[2:])
             elif listOfFam[-1]['DIV']:
