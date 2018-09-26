@@ -115,6 +115,14 @@ def marriage_before_death(marriage, death):
         return True;
     return False;
 
+def datesBeforeCurrent(marriage, death, birth, current):
+    if(marriage<current and death<current):
+        if(birth == current):
+            
+            return True;
+        elif(birth < current):
+            return True;
+    return False;
 
 
 def print_stuff(listOfPpl,listOfFam):
@@ -157,7 +165,15 @@ def print_stuff(listOfPpl,listOfFam):
                     married=datetime.strptime(fam['MARR'], '%d %b %Y')
                     if(marriage_before_death(death, married)):
                         print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his death date in Family ",ppl['FAMS'],"."
-
+    for ppl in listOfPpl:
+       if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
+           for fam in listOfFam:
+               if(fam['ID']==ppl['FAMS']):
+                   death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+                   married=datetime.strptime(fam['MARR'], '%d %b %Y')
+                   birth=datetime.strptime(fam['BIRT'], '%d %b %Y')
+                   if(datesBeforeCurrent(death, married, current)):
+                       print ("Error US01: Dates of ",ppl['NAME'],"(",ppl['ID'],") occurs after the current date",ppl['FAMS'],".")
 
 
 #readGED takes in the specified GED file from the user
