@@ -95,9 +95,19 @@ def saveInfo(listOfPpl,listOfFam,row):
     elif row[0] == '2':
         if row[1] == 'DATE':
             if listOfPpl[-1]['BIRT'] and not isinstance(listOfPpl[-1]['BIRT'], str):
-                listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+                if(checkDeatBeforeBirt(" ".join(row[2:]),listOfPpl[-1]['DEAT'])):
+                    listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+                else:
+                    print("Error: A date for Death exist before a date for Birth")
+                    listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+
             elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
-                listOfPpl[-1]['DEAT'] = " ".join(row[2:])
+                if(checkDeatBeforeBirt(listOfPpl[-1]['BIRT']," ".join(row[2:]))):
+                    listOfPpl[-1]['DEAT'] = " ".join(row[2:])
+                else:
+                    print("Error: A date for Death exist before a date for Birth")
+                    listOfPpl[-1]['ALIVE'] = False
+                    listOfPpl[-1]['DEAT'] = " ".join(row[2:])
             elif listOfFam[-1]['MARR']:
                 listOfFam[-1]['MARR'] = " ".join(row[2:])
             elif listOfFam[-1]['DIV']:
@@ -107,7 +117,25 @@ def saveInfo(listOfPpl,listOfFam,row):
 #calculates the age of the current individual
 #returns the age of the current individual
 def calculate_age(born,upTo):
-    return upTo.year - born.year - ((upTo.month, upTo.day) < (born.month, born.day))
+    if((upTo.month, upTo.day) < (born.month, born.day)):
+        return upTo.year - born.year - 1
+    else:
+        return upTo.year - born.year - 0
+
+
+def checkDeatBeforeBirt(birth,death):
+    if birth == 'N/A':
+        return False
+    if death == 'N/A':
+        return True
+
+    born = datetime.strptime(birth,'%d %b %Y')
+    died = datetime.strptime(death,'%d %b %Y')
+
+    if (calculate_age(born,died)<0):
+        return False
+    else:
+        return True
 
 
 #readGED takes in the specified GED file from the user
