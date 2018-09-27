@@ -138,7 +138,7 @@ def checkDeatBeforeBirt(birth,death):
         return True
 
 #makes sure that every individual was married before they died
-def marriage_before_death(marriage, death):
+def marriage_before_death(death, marriage):
     if(marriage<death):
         return True;
     return False;
@@ -152,11 +152,25 @@ def datesBeforeCurrent(marriage, death, birth, current):
             return True;
     return False;
 
-def deathBeforeDivorce(divorce, death):
-    if(death<divorce):
+def divorce_before_death(divorce, death):
+    if(divorce<death):
         return True;
     return False;
 
+def birth_before_marriage(birth, marriage):
+    if(birth<marriage):
+        return True;
+    return False;
+
+def birth_9months_before_divorce(birth, divorce):
+    if((birth-divorce).months <=9):
+        return True;
+    return False;
+
+def marriage_before_divorce(divorce,marriage):
+    if(marriage<divorce):
+        return True;
+    return False;
 
 def print_stuff(listOfPpl,listOfFam):
 
@@ -190,14 +204,7 @@ def print_stuff(listOfPpl,listOfFam):
     print ('Families')
     print fam_table
 
-    for ppl in listOfPpl:
-        if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
-            for fam in listOfFam:
-                if(fam['ID']==ppl['FAMS']):
-                    death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
-                    married=datetime.strptime(fam['MARR'], '%d %b %Y')
-                    if(marriage_before_death(death, married)):
-                        print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his death date in Family ",ppl['FAMS'],"."
+
     for ppl in listOfPpl:
        if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
            for fam in listOfFam:
@@ -207,15 +214,48 @@ def print_stuff(listOfPpl,listOfFam):
                    birth=datetime.strptime(fam['BIRT'], '%d %b %Y')
                    if(datesBeforeCurrent(death, married, current)):
                        print ("Error US01: Dates of ",ppl['NAME'],"(",ppl['ID'],") occurs after the current date",ppl['FAMS'],".")
-    
+
+    for fam in listOfFam:
+        if(fam['DIV']!='N/A' and fam['MARR']!='N/A'):
+            marriage=datetime.strptime(fam['MARR'], '%d %b %Y');
+            divorce=datetime.strptime(fam['DIV'], '%d %b %Y');
+            if(marriage_before_divorce(divorce,marriage)==False):
+                print "Error US04: Divorce date occurs before marriage date in Family ",fam['ID'],"."
+        if(fam['DIV']!='N/A' and fam['MARR']=='N/A'):
+                print "Error US04: Divorce date occurs before marriage date in Family ",fam['ID'],"."
+
     for ppl in listOfPpl:
         if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
             for fam in listOfFam:
                 if(fam['ID']==ppl['FAMS']):
                     death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+                    married=datetime.strptime(fam['MARR'], '%d %b %Y')
+                    if(marriage_before_death(death, married)==False):
+                        print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her death date in Family ",fam['ID'],"."
+    
+    for ppl in listOfPpl:
+        if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
+            for fam in listOfFam:
+                if(fam['ID']==ppl['FAMS'] and fam['DIV']!='N/A'):
+                    death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
                     divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
-                    if(deathBeforeDivorce(divorce, death)):
-                        print "Error US06: Divorce date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his death date in Family ",ppl['FAMS'],"."
+                    if(divorce_before_death(divorce, death)):
+                        print "Error US06: Divorce date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her death date in Family ",fam['ID'],"."
+
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if(fam['ID']==ppl['FAMC']):
+                birth=datetime.strptime(ppl['BIRT'], '%d %b %Y')
+                married=datetime.strptime(fam['MARR'], '%d %b %Y')
+                if(birth_before_marriage(birth,married)):
+                    print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs before his/her parents' marriage date in Family ",fam['ID'],"."
+                elif(fam['DIV']!='N/A'):
+                    divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
+                    if(birth_9months_before_divorce(birth,divorce)==False):
+                        print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs > 9 months after his/her parents' divorce date in Family ",fam['ID'],"."
+
+
+
 
 #readGED takes in the specified GED file from the user
 #Opens the GED file and store each indi and fam in a list
