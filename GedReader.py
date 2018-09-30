@@ -98,14 +98,14 @@ def saveInfo(listOfPpl,listOfFam,row):
                 if(checkDeatBeforeBirt(" ".join(row[2:]),listOfPpl[-1]['DEAT'])):
                     listOfPpl[-1]['BIRT'] = " ".join(row[2:])
                 else:
-                    print("Error: A date for Death exist before a date for Birth")
+                    print("Error US03: Indiv "+listOfPpl[-1]['NAME']+"has a date for Death exist before a date for Birth")
                     listOfPpl[-1]['BIRT'] = " ".join(row[2:])
 
             elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
                 if(checkDeatBeforeBirt(listOfPpl[-1]['BIRT']," ".join(row[2:]))):
                     listOfPpl[-1]['DEAT'] = " ".join(row[2:])
                 else:
-                    print("Error: A date for Death exist before a date for Birth")
+                    print("Error US03: Indiv "+listOfPpl[-1]['NAME']+"has a date for Death exist before a date for Birth")
                     listOfPpl[-1]['ALIVE'] = False
                     listOfPpl[-1]['DEAT'] = " ".join(row[2:])
             elif listOfFam[-1]['MARR']:
@@ -146,7 +146,7 @@ def marriage_before_death(death, marriage):
 def datesBeforeCurrent(marriage, death, birth, current):
     if(marriage<current and death<current):
         if(birth == current):
-            
+
             return True;
         elif(birth < current):
             return True;
@@ -185,7 +185,6 @@ def print_stuff(listOfPpl,listOfFam):
     for fam in listOfFam:
         fam_table.add_row([fam['ID'],fam['MARR'],fam['DIV'],fam['HUSB'], fam['HUSBNAME'], fam['WIFE'], fam['WIFENAME'], fam['CHIL']])
 
-    print'\n'
 
     #Creates the table of all Individuals
     for ppl in listOfPpl:
@@ -196,23 +195,19 @@ def print_stuff(listOfPpl,listOfFam):
         else:
             upTo = datetime.strptime(ppl['DEAT'],'%d %b %Y')
         ppl['AGE'] = calculate_age(born,upTo)
+        if (calculate_age(born,upTo)>150):
+            print("Error US07: An individual is older than 150 years old")
         ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'], ppl['AGE'], ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
-
-    print ('Individuals')
-    print ind_table
-    print('\n')
-    print ('Families')
-    print fam_table
-
 
     for ppl in listOfPpl:
        if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
            for fam in listOfFam:
                if(fam['ID']==ppl['FAMS']):
                    death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+                   birth=datetime.strptime(ppl['BIRT'], '%d %b %Y')
                    married=datetime.strptime(fam['MARR'], '%d %b %Y')
-                   birth=datetime.strptime(fam['BIRT'], '%d %b %Y')
-                   if(datesBeforeCurrent(death, married, current)):
+                   current =datetime.today()
+                   if(datesBeforeCurrent(death,birth ,married, current)):
                        print ("Error US01: Dates of ",ppl['NAME'],"(",ppl['ID'],") occurs after the current date",ppl['FAMS'],".")
 
     for fam in listOfFam:
@@ -232,7 +227,7 @@ def print_stuff(listOfPpl,listOfFam):
                     married=datetime.strptime(fam['MARR'], '%d %b %Y')
                     if(marriage_before_death(death, married)==False):
                         print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her death date in Family ",fam['ID'],"."
-    
+
     for ppl in listOfPpl:
         if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
             for fam in listOfFam:
@@ -254,7 +249,12 @@ def print_stuff(listOfPpl,listOfFam):
                     if(birth_9months_before_divorce(birth,divorce)==False):
                         print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs > 9 months after his/her parents' divorce date in Family ",fam['ID'],"."
 
-
+    print('\n')
+    print ('Individuals')
+    print ind_table
+    print('\n')
+    print ('Families')
+    print fam_table
 
 
 #readGED takes in the specified GED file from the user
@@ -316,4 +316,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
