@@ -144,13 +144,19 @@ def marriage_before_death(death, marriage):
     return False;
 
 def datesBeforeCurrent(marriage, death, birth, current):
+    if birth == 'N/A':
+        return False
+    if death == 'N/A':
+        return False
+    if marriage == 'N/A':
+        return False
+    
     if(marriage<current and death<current):
         if(birth == current):
-
             return True;
         elif(birth < current):
             return True;
-    return False;
+        return False;
 
 def divorce_before_death(divorce, death):
     if(divorce<death):
