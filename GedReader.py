@@ -1,4 +1,4 @@
-#!usr/bin/python
+#!/usr/bin/python
 
 
 #Calvin Han, Matt Sirota, Karun Sekhar
