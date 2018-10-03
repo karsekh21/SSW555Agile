@@ -85,9 +85,9 @@ def saveInfo(listOfPpl,listOfFam,row):
                     if " ".join(row[2:]) == ppl['ID'] :
                         listOfFam[-1][row[1]+'NAME'] = ppl['NAME']
         elif row[1] == 'MARR':
-            listOfPpl[-1][row[1]] = True
+            listOfFam[-1][row[1]] = 'd'
         elif row[1] == 'DIV':
-            listOfPpl[-1][row[1]] = True
+            listOfFam[-1][row[1]] = 'd'
         elif row[1] == 'CHIL':
             listOfFam[-1][row[1]].append(" ".join(row[2:]))
 
@@ -108,10 +108,13 @@ def saveInfo(listOfPpl,listOfFam,row):
                     print("Error US03: Indiv "+listOfPpl[-1]['NAME']+"has a date for Death exist before a date for Birth")
                     listOfPpl[-1]['ALIVE'] = False
                     listOfPpl[-1]['DEAT'] = " ".join(row[2:])
-            elif listOfFam[-1]['MARR']:
+
+            elif (listOfFam[-1]['MARR']=='d'):
                 listOfFam[-1]['MARR'] = " ".join(row[2:])
+
             elif listOfFam[-1]['DIV']:
                 listOfFam[-1]['DIV'] = " ".join(row[2:])
+
 
 #calculate_age takes in the year born and the year wanted to calc age
 #calculates the age of the current individual
@@ -144,13 +147,18 @@ def marriage_before_death(death, marriage):
     return False;
 
 def datesBeforeCurrent(marriage, death, birth, current):
-    if(marriage<current and death<current):
-        if(birth == current):
-
-            return True;
-        elif(birth < current):
-            return True;
-    return False;
+    if(marriage<current and death<current and birth < current):
+        # if(birth == current):
+        #
+        #     return True;
+        # elif(birth < current):
+        #     return True;
+        # print birth
+        # print marriage<current
+        # print death<current
+        # print birth<current
+        return True
+    return False
 
 def divorce_before_death(divorce, death):
     if(divorce<death):
@@ -163,7 +171,7 @@ def birth_before_marriage(birth, marriage):
     return False;
 
 def birth_9months_before_divorce(birth, divorce):
-    if((birth-divorce).months <=9):
+    if((birth.month-divorce.month) <=9):
         return True;
     return False;
 
@@ -200,14 +208,18 @@ def print_stuff(listOfPpl,listOfFam):
         ind_table.add_row([ppl['ID'],ppl['NAME'],ppl['SEX'],ppl['BIRT'], ppl['AGE'], ppl['ALIVE'],ppl['DEAT'], ppl['FAMC'], ppl['FAMS']])
 
     for ppl in listOfPpl:
-       if (ppl['FAMS']!='N/A' and ppl['DEAT']!='N/A'):
+       if (ppl['FAMS']!='N/A' or ppl['FAMC']!='N/A'):
            for fam in listOfFam:
                if(fam['ID']==ppl['FAMS']):
-                   death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+                   if (ppl['DEAT'] == 'N/A'):
+                       death = datetime.today()
+                   else:
+                       death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+
                    birth=datetime.strptime(ppl['BIRT'], '%d %b %Y')
                    married=datetime.strptime(fam['MARR'], '%d %b %Y')
                    current =datetime.today()
-                   if(datesBeforeCurrent(death,birth ,married, current)):
+                   if not (datesBeforeCurrent(married,death,birth , current)):
                        print ("Error US01: Dates of ",ppl['NAME'],"(",ppl['ID'],") occurs after the current date",ppl['FAMS'],".")
 
     for fam in listOfFam:
@@ -234,7 +246,7 @@ def print_stuff(listOfPpl,listOfFam):
                 if(fam['ID']==ppl['FAMS'] and fam['DIV']!='N/A'):
                     death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
                     divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
-                    if(divorce_before_death(divorce, death)):
+                    if not (divorce_before_death(divorce, death)):
                         print "Error US06: Divorce date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her death date in Family ",fam['ID'],"."
 
     for ppl in listOfPpl:
