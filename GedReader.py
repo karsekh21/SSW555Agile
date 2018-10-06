@@ -50,14 +50,18 @@ def checkTags(row,file):
         file.write('<-- '+row[0]+'|'+row[1]+'|'+'N|'+args+'\n')
 
 
-#saveInfo takes in the current row and the file being written in
-#Uses a dictionary of all possible combinations of the tags
-#Prints out the 2nd half of the output from the current line
-def saveInfo(listOfPpl,listOfFam,row):
+def saveInfoZeroTag(listOfPpl,listOfFam,code, tag):
     #Dictionary that will contain the info on each indi or fam
     randIndi = {'ID':'N/A','NAME':'N/A','SEX':'N/A','AGE':'N/A','BIRT':'N/A','DEAT':'N/A','FAMC':'N/A','FAMS':'N/A','ALIVE':True}
     randFam = {'ID':'N/A','MARR':'N/A','DIV':'N/A','HUSB':'N/A','HUSBNAME':'N/A','WIFE':'N/A','WIFENAME':'N/A','CHIL':list()}
+    if (tag == 'INDI'):
+        randIndi['ID'] = code
+        listOfPpl.append(randIndi)
+    elif (tag == 'FAM'):
+        randFam['ID'] = code
+        listOfFam.append(randFam)
 
+<<<<<<< HEAD
     #Checks if the current row is lvl 0
     if row[0] == '0':
         #checks if it is an individual or a family
@@ -102,13 +106,70 @@ def saveInfo(listOfPpl,listOfFam,row):
             elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
                 listOfPpl[-1]['ALIVE'] = False
                 listOfPpl[-1]['DEAT'] = " ".join(row[2:])
+=======
 
-            elif (listOfFam[-1]['MARR']=='d'):
-                listOfFam[-1]['MARR'] = " ".join(row[2:])
+def saveInfoOneTag(listOfPpl,listOfFam,code, tag):
+    #Dictionary that will contain the info on each indi or fam
 
-            elif listOfFam[-1]['DIV']:
-                listOfFam[-1]['DIV'] = " ".join(row[2:])
+    if tag == 'BIRT':
+        listOfPpl[-1][tag] = True
 
+    elif tag == 'DEAT':
+        listOfPpl[-1]['ALIVE'] = False
+        listOfPpl[-1][tag] = True
+
+    elif tag == 'MARR' or tag == 'DIV':
+        listOfFam[-1][tag] = True
+>>>>>>> refactor1
+
+    elif tag == 'CHIL':
+        listOfFam[-1][tag].append(" ".join(code))
+
+    elif tag in listOfPpl[-1]:
+        listOfPpl[-1][tag] = " ".join(code)
+    elif tag in listOfFam[-1]:
+        if tag == 'HUSB' or tag == 'WIFE':
+            for ppl in listOfPpl:
+                if " ".join(code) == ppl['ID'] :
+                    listOfFam[-1][tag+'NAME'] = ppl['NAME']
+        listOfFam[-1][tag] = " ".join(code)
+
+
+def saveInfoTwoTag(listOfPpl,listOfFam,code, tag):
+    #Dictionary that will contain the info on each indi or fam
+    if tag == 'BIRT' or tag == 'DEAT':
+        listOfPpl[-1][tag] = " ".join(code)
+    elif tag == 'DIV' or tag == 'MARR':
+        listOfFam[-1][tag] = " ".join(code)
+
+
+
+#saveInfo takes in the current row and the file being written in
+#Uses a dictionary of all possible combinations of the tags
+#Prints out the 2nd half of the output from the current line
+def saveInfo(listOfPpl,listOfFam,lines):
+    count = 0
+    for curLine in lines:
+        #Splits the string up by spaces
+        row =re.split(r'\s',curLine.strip())
+        #calls saveInfo
+        #Checks if the current row is lvl 0
+        if row[0] == '0':
+            #checks if it is an individual or a family
+            saveInfoZeroTag(listOfPpl,listOfFam,row[1],row[2])
+
+        #Checks if the current row is lvl 1
+        elif row[0]== '1':
+            #Place info for the proper tags for ppl list except BIRT and DEAT tag
+            saveInfoOneTag(listOfPpl,listOfFam,row[2:],row[1])
+
+        #Checks if it is 2 tag which must be for the a Date
+        elif row[0] == '2':
+            prevTag =  re.split(r'\s',lines[count-1].strip())[1]
+
+            saveInfoTwoTag(listOfPpl,listOfFam,row[2:],prevTag)
+
+        count+=1
 
 #calculate_age takes in the year born and the year wanted to calc age
 #calculates the age of the current individual
@@ -526,14 +587,9 @@ def readGED(fileName,listOfPpl,listOfFam):
     #Reads each line and places each line in a list
     lines = rfile.readlines()
 
-    #For loop goes through the entire lines list
-    for row in lines:
-        #Splits the string up by spaces
-        currLine =re.split(r'\s',row.strip())
-        #calls saveInfo
-        saveInfo(listOfPpl,listOfFam,currLine)
+    saveInfo(listOfPpl,listOfFam,lines)
 
-   	rfile.close()
+    rfile.close()
 
 
 
