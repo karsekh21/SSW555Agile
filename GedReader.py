@@ -97,19 +97,11 @@ def saveInfo(listOfPpl,listOfFam,row):
     elif row[0] == '2':
         if row[1] == 'DATE':
             if listOfPpl[-1]['BIRT'] and not isinstance(listOfPpl[-1]['BIRT'], str):
-                if(checkDeatBeforeBirt(" ".join(row[2:]),listOfPpl[-1]['DEAT'])):
-                    listOfPpl[-1]['BIRT'] = " ".join(row[2:])
-                else:
-                    print("Error US03: Indiv "+listOfPpl[-1]['NAME']+"has a date for Death exist before a date for Birth")
-                    listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+                listOfPpl[-1]['BIRT'] = " ".join(row[2:])
 
             elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
-                if(checkDeatBeforeBirt(listOfPpl[-1]['BIRT']," ".join(row[2:]))):
-                    listOfPpl[-1]['DEAT'] = " ".join(row[2:])
-                else:
-                    print("Error US03: Indiv "+listOfPpl[-1]['NAME']+"has a date for Death exist before a date for Birth")
-                    listOfPpl[-1]['ALIVE'] = False
-                    listOfPpl[-1]['DEAT'] = " ".join(row[2:])
+                listOfPpl[-1]['ALIVE'] = False
+                listOfPpl[-1]['DEAT'] = " ".join(row[2:])
 
             elif (listOfFam[-1]['MARR']=='d'):
                 listOfFam[-1]['MARR'] = " ".join(row[2:])
@@ -185,7 +177,7 @@ def US03(ppl):
 		return False
 	return True
 
-#makes sure that marriage occurs before a divorce        
+#makes sure that marriage occurs before a divorce
 def US04(fam):
     if(fam['DIV']!='N/A' and fam['MARR']!='N/A'):
         marriage=datetime.strptime(fam['MARR'], '%d %b %Y');
@@ -242,20 +234,20 @@ def find_age(start, end):
         return relativedelta(end, start).years
     except ValueError:
         return 'NA'
-    
+
 def husb_marr_after_14(indiv, fam):
     """Checks if husband is older than 14 when married"""
     if not 'MARR' in fam:
         return False
-    
+
     husb = fam['HUSB']
     return find_age(indiv[husb]['BIRT'], fam['MARR']) >= 14
-    
+
 def wife_marr_after_14(indiv, fam):
     """Checks if wife is older than 14 when married"""
     if not 'MARR' in fam:
         return False
-    
+
     wife = fam['WIFE']
     return find_age(indiv[wife]['BIRT'], fam['MARR']) >= 14
 
@@ -279,7 +271,7 @@ def date_first(date1, date2):
                 relativedelta(date2, date1).years >= 0)
     except ValueError:
         return False
-    
+
 def no_bigamy(indiv, fams):
     """Checks that individuals were not spouses in multiple families at the same time"""
     if "FAMS" in indiv and len(indiv["FAMS"]) > 1:
@@ -305,7 +297,7 @@ def no_bigamy(indiv, fams):
                     return (fam, marr_fam)
         return True
     else:
-        return True    
+        return True
 
 def husb_not_too_old(fam, indivs):
     """Check if father is too old"""
@@ -348,7 +340,7 @@ def multiple_births(indiv, fam):
                 i+=1
             if i == 6:
                 return False
-    return True    
+    return True
 
 def fewer_than_15_siblings(fam):
     if 'CHIL' in fam:
@@ -359,7 +351,7 @@ def male_last_names(inds, males):
     """Checks male last names, returns appropriate Boolean for if all male last names consistent"""
     lastNames = []
     for male in males:
-        lastNames.append(get_last_name(inds, male)) 
+        lastNames.append(get_last_name(inds, male))
     return len(set(lastNames))==1
 
 def get_last_name(people, individual):
@@ -375,7 +367,7 @@ def get_males(families, people):
         children = families['CHIL']
         for kid in children:
             if kid in people and people[kid]['SEX'] == 'M':
-                familyMen.append(kid) 
+                familyMen.append(kid)
     return familyMen
 
 def no_marr_to_desc(individuals, family, families):
@@ -389,14 +381,14 @@ def no_marr_to_desc(individuals, family, families):
     elif wife in descendents:
         return False
     else:
-        return True 
+        return True
 
 def get_desc(individuals, family, allFam):
     """Function finds children within family, calls get_lower_desc if grandchildren found"""
-    if 'CHIL' in family:    
+    if 'CHIL' in family:
         children = family['CHIL']
     else:
-        children = [] 
+        children = []
 
     if children == []:
         return children
