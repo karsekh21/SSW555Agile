@@ -61,52 +61,6 @@ def saveInfoZeroTag(listOfPpl,listOfFam,code, tag):
         randFam['ID'] = code
         listOfFam.append(randFam)
 
-<<<<<<< HEAD
-    #Checks if the current row is lvl 0
-    if row[0] == '0':
-        #checks if it is an individual or a family
-        if row[2] == 'INDI':
-            randIndi['ID'] = row[1]
-            listOfPpl.append(randIndi)
-        elif row[2] == 'FAM':
-            randFam['ID'] = row[1]
-            listOfFam.append(randFam)
-    #Checks if the current row is lvl 1
-    elif row[0]== '1':
-        #Place info for the proper tags for ppl list except BIRT and DEAT tag
-        if row[1] in listOfPpl[-1] and row[1] != 'BIRT' and row[1] != 'DEAT':
-            listOfPpl[-1][row[1]] = " ".join(row[2:])
-        #Place a marker for BIRT tag to show it was called
-        elif row[1] == 'BIRT':
-            listOfPpl[-1][row[1]] = True
-        #Place a marker for DEAT tag to show it was called
-        elif row[1] == 'DEAT':
-            listOfPpl[-1][row[1]] = True
-            listOfPpl[-1]['ALIVE']= False
-        #Place info for the proper tags for fam list
-        elif row[1] in listOfFam[-1] and row[1] != 'MARR' and row[1] != 'DIV' and row[1] != 'CHIL':
-            listOfFam[-1][row[1]] = " ".join(row[2:])
-            if row[1] == 'HUSB' or row[1] == 'WIFE':
-                for ppl in listOfPpl:
-                    if " ".join(row[2:]) == ppl['ID'] :
-                        listOfFam[-1][row[1]+'NAME'] = ppl['NAME']
-        elif row[1] == 'MARR':
-            listOfFam[-1][row[1]] = 'd'
-        elif row[1] == 'DIV':
-            listOfFam[-1][row[1]] = 'd'
-        elif row[1] == 'CHIL':
-            listOfFam[-1][row[1]].append(" ".join(row[2:]))
-
-    #Checks if it is 2 tag which must be for the a Date
-    elif row[0] == '2':
-        if row[1] == 'DATE':
-            if listOfPpl[-1]['BIRT'] and not isinstance(listOfPpl[-1]['BIRT'], str):
-                listOfPpl[-1]['BIRT'] = " ".join(row[2:])
-
-            elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
-                listOfPpl[-1]['ALIVE'] = False
-                listOfPpl[-1]['DEAT'] = " ".join(row[2:])
-=======
 
 def saveInfoOneTag(listOfPpl,listOfFam,code, tag):
     #Dictionary that will contain the info on each indi or fam
@@ -120,7 +74,6 @@ def saveInfoOneTag(listOfPpl,listOfFam,code, tag):
 
     elif tag == 'MARR' or tag == 'DIV':
         listOfFam[-1][tag] = True
->>>>>>> refactor1
 
     elif tag == 'CHIL':
         listOfFam[-1][tag].append(" ".join(code))
