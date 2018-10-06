@@ -50,73 +50,93 @@ def checkTags(row,file):
         file.write('<-- '+row[0]+'|'+row[1]+'|'+'N|'+args+'\n')
 
 
-#saveInfo takes in the current row and the file being written in
-#Uses a dictionary of all possible combinations of the tags
-#Prints out the 2nd half of the output from the current line
-def saveInfo(listOfPpl,listOfFam,row):
+def saveInfoZeroTag(listOfPpl,listOfFam,code, tag):
     #Dictionary that will contain the info on each indi or fam
     randIndi = {'ID':'N/A','NAME':'N/A','SEX':'N/A','AGE':'N/A','BIRT':'N/A','DEAT':'N/A','FAMC':'N/A','FAMS':'N/A','ALIVE':True}
     randFam = {'ID':'N/A','MARR':'N/A','DIV':'N/A','HUSB':'N/A','HUSBNAME':'N/A','WIFE':'N/A','WIFENAME':'N/A','CHIL':list()}
+    if (tag == 'INDI'):
+        randIndi['ID'] = code
+        listOfPpl.append(randIndi)
+    elif (tag == 'FAM'):
+        randFam['ID'] = code
+        listOfFam.append(randFam)
 
-    #Checks if the current row is lvl 0
-    if row[0] == '0':
-        #checks if it is an individual or a family
-        if row[2] == 'INDI':
-            randIndi['ID'] = row[1]
-            listOfPpl.append(randIndi)
-        elif row[2] == 'FAM':
-            randFam['ID'] = row[1]
-            listOfFam.append(randFam)
-    #Checks if the current row is lvl 1
-    elif row[0]== '1':
-        #Place info for the proper tags for ppl list except BIRT and DEAT tag
-        if row[1] in listOfPpl[-1] and row[1] != 'BIRT' and row[1] != 'DEAT':
-            listOfPpl[-1][row[1]] = " ".join(row[2:])
-        #Place a marker for BIRT tag to show it was called
-        elif row[1] == 'BIRT':
-            listOfPpl[-1][row[1]] = True
-        #Place a marker for DEAT tag to show it was called
-        elif row[1] == 'DEAT':
-            listOfPpl[-1][row[1]] = True
-            listOfPpl[-1]['ALIVE']= False
-        #Place info for the proper tags for fam list
-        elif row[1] in listOfFam[-1] and row[1] != 'MARR' and row[1] != 'DIV' and row[1] != 'CHIL':
-            listOfFam[-1][row[1]] = " ".join(row[2:])
-            if row[1] == 'HUSB' or row[1] == 'WIFE':
-                for ppl in listOfPpl:
-                    if " ".join(row[2:]) == ppl['ID'] :
-                        listOfFam[-1][row[1]+'NAME'] = ppl['NAME']
-        elif row[1] == 'MARR':
-            listOfFam[-1][row[1]] = 'd'
-        elif row[1] == 'DIV':
-            listOfFam[-1][row[1]] = 'd'
-        elif row[1] == 'CHIL':
-            listOfFam[-1][row[1]].append(" ".join(row[2:]))
 
-    #Checks if it is 2 tag which must be for the a Date
-    elif row[0] == '2':
-        if row[1] == 'DATE':
-            if listOfPpl[-1]['BIRT'] and not isinstance(listOfPpl[-1]['BIRT'], str):
-                if(checkDeatBeforeBirt(" ".join(row[2:]),listOfPpl[-1]['DEAT'])):
-                    listOfPpl[-1]['BIRT'] = " ".join(row[2:])
-                else:
-                    print("Error US03: Indiv "+listOfPpl[-1]['NAME']+"has a date for Death exist before a date for Birth")
-                    listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+def saveInfoOneTag(listOfPpl,listOfFam,code, tag):
+    #Dictionary that will contain the info on each indi or fam
 
-            elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
-                if(checkDeatBeforeBirt(listOfPpl[-1]['BIRT']," ".join(row[2:]))):
-                    listOfPpl[-1]['DEAT'] = " ".join(row[2:])
-                else:
-                    print("Error US03: Indiv "+listOfPpl[-1]['NAME']+"has a date for Death exist before a date for Birth")
-                    listOfPpl[-1]['ALIVE'] = False
-                    listOfPpl[-1]['DEAT'] = " ".join(row[2:])
+    if tag == 'BIRT':
+        listOfPpl[-1][tag] = True
 
-            elif (listOfFam[-1]['MARR']=='d'):
-                listOfFam[-1]['MARR'] = " ".join(row[2:])
+    elif tag == 'DEAT':
+        listOfPpl[-1]['ALIVE'] = False
+        listOfPpl[-1][tag] = True
 
-            elif listOfFam[-1]['DIV']:
-                listOfFam[-1]['DIV'] = " ".join(row[2:])
+    elif tag == 'MARR' or tag == 'DIV':
+        listOfFam[-1][tag] = True
+        if tag == 'HUSB' or tag == 'WIFE':
+            for ppl in listOfPpl:
+                if " ".join(code) == ppl['ID'] :
+                    listOfFam[-1][tag+'NAME'] = ppl['NAME']
 
+    elif tag == 'CHIL':
+        listOfFam[-1][tag].append(" ".join(code))
+
+    elif tag in listOfPpl[-1]:
+        listOfPpl[-1][tag] = " ".join(code)
+    elif tag in listOfFam[-1]:
+        listOfFam[-1][tag] = " ".join(code)
+
+def saveInfoTwoTag(listOfPpl,listOfFam,code, tag):
+    #Dictionary that will contain the info on each indi or fam
+    print code
+    print tag
+    if tag == 'BIRT' or tag == 'DEAT':
+        listOfPpl[-1][tag] = " ".join(code)
+    elif tag == 'DIV' or tag == 'MARR':
+        listOfFam[-1][tag] = " ".join(code)
+
+
+
+#saveInfo takes in the current row and the file being written in
+#Uses a dictionary of all possible combinations of the tags
+#Prints out the 2nd half of the output from the current line
+def saveInfo(listOfPpl,listOfFam,lines):
+    count = 0
+    for curLine in lines:
+        #Splits the string up by spaces
+        row =re.split(r'\s',curLine.strip())
+        #calls saveInfo
+        #Checks if the current row is lvl 0
+        if row[0] == '0':
+            #checks if it is an individual or a family
+            saveInfoZeroTag(listOfPpl,listOfFam,row[1],row[2])
+
+        #Checks if the current row is lvl 1
+        elif row[0]== '1':
+            #Place info for the proper tags for ppl list except BIRT and DEAT tag
+            saveInfoOneTag(listOfPpl,listOfFam,row[2:],row[1])
+
+        #Checks if it is 2 tag which must be for the a Date
+        elif row[0] == '2':
+            # if row[1] == 'DATE':
+            #     if listOfPpl[-1]['BIRT'] and not isinstance(listOfPpl[-1]['BIRT'], str):
+            #         listOfPpl[-1]['BIRT'] = " ".join(row[2:])
+            #
+            #     elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
+            #         listOfPpl[-1]['DEAT'] = " ".join(row[2:])
+            #
+            #     elif (listOfFam[-1]['MARR'] and not isinstance(listOfFam[-1]['MARR'], str)):
+            #         listOfFam[-1]['MARR'] = " ".join(row[2:])
+            #
+            #     elif (listOfFam[-1]['DIV'] and not isinstance(listOfFam[-1]['DIV'], str)):
+            #         listOfFam[-1]['DIV'] = " ".join(row[2:])
+
+            prevTag =  re.split(r'\s',lines[count-1].strip())[1]
+
+            saveInfoTwoTag(listOfPpl,listOfFam,row[2:],prevTag)
+
+        count+=1
 
 #calculate_age takes in the year born and the year wanted to calc age
 #calculates the age of the current individual
@@ -185,7 +205,7 @@ def US03(ppl):
 		return False
 	return True
 
-#makes sure that marriage occurs before a divorce        
+#makes sure that marriage occurs before a divorce
 def US04(fam):
     if(fam['DIV']!='N/A' and fam['MARR']!='N/A'):
         marriage=datetime.strptime(fam['MARR'], '%d %b %Y');
@@ -242,20 +262,20 @@ def find_age(start, end):
         return relativedelta(end, start).years
     except ValueError:
         return 'NA'
-    
+
 def husb_marr_after_14(indiv, fam):
     """Checks if husband is older than 14 when married"""
     if not 'MARR' in fam:
         return False
-    
+
     husb = fam['HUSB']
     return find_age(indiv[husb]['BIRT'], fam['MARR']) >= 14
-    
+
 def wife_marr_after_14(indiv, fam):
     """Checks if wife is older than 14 when married"""
     if not 'MARR' in fam:
         return False
-    
+
     wife = fam['WIFE']
     return find_age(indiv[wife]['BIRT'], fam['MARR']) >= 14
 
@@ -279,7 +299,7 @@ def date_first(date1, date2):
                 relativedelta(date2, date1).years >= 0)
     except ValueError:
         return False
-    
+
 def no_bigamy(indiv, fams):
     """Checks that individuals were not spouses in multiple families at the same time"""
     if "FAMS" in indiv and len(indiv["FAMS"]) > 1:
@@ -305,7 +325,7 @@ def no_bigamy(indiv, fams):
                     return (fam, marr_fam)
         return True
     else:
-        return True    
+        return True
 
 def husb_not_too_old(fam, indivs):
     """Check if father is too old"""
@@ -348,7 +368,7 @@ def multiple_births(indiv, fam):
                 i+=1
             if i == 6:
                 return False
-    return True    
+    return True
 
 def fewer_than_15_siblings(fam):
     if 'CHIL' in fam:
@@ -359,7 +379,7 @@ def male_last_names(inds, males):
     """Checks male last names, returns appropriate Boolean for if all male last names consistent"""
     lastNames = []
     for male in males:
-        lastNames.append(get_last_name(inds, male)) 
+        lastNames.append(get_last_name(inds, male))
     return len(set(lastNames))==1
 
 def get_last_name(people, individual):
@@ -375,7 +395,7 @@ def get_males(families, people):
         children = families['CHIL']
         for kid in children:
             if kid in people and people[kid]['SEX'] == 'M':
-                familyMen.append(kid) 
+                familyMen.append(kid)
     return familyMen
 
 def no_marr_to_desc(individuals, family, families):
@@ -389,14 +409,14 @@ def no_marr_to_desc(individuals, family, families):
     elif wife in descendents:
         return False
     else:
-        return True 
+        return True
 
 def get_desc(individuals, family, allFam):
     """Function finds children within family, calls get_lower_desc if grandchildren found"""
-    if 'CHIL' in family:    
+    if 'CHIL' in family:
         children = family['CHIL']
     else:
-        children = [] 
+        children = []
 
     if children == []:
         return children
@@ -534,14 +554,9 @@ def readGED(fileName,listOfPpl,listOfFam):
     #Reads each line and places each line in a list
     lines = rfile.readlines()
 
-    #For loop goes through the entire lines list
-    for row in lines:
-        #Splits the string up by spaces
-        currLine =re.split(r'\s',row.strip())
-        #calls saveInfo
-        saveInfo(listOfPpl,listOfFam,currLine)
+    saveInfo(listOfPpl,listOfFam,lines)
 
-   	rfile.close()
+    rfile.close()
 
 
 
