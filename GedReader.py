@@ -74,10 +74,6 @@ def saveInfoOneTag(listOfPpl,listOfFam,code, tag):
 
     elif tag == 'MARR' or tag == 'DIV':
         listOfFam[-1][tag] = True
-        if tag == 'HUSB' or tag == 'WIFE':
-            for ppl in listOfPpl:
-                if " ".join(code) == ppl['ID'] :
-                    listOfFam[-1][tag+'NAME'] = ppl['NAME']
 
     elif tag == 'CHIL':
         listOfFam[-1][tag].append(" ".join(code))
@@ -85,12 +81,15 @@ def saveInfoOneTag(listOfPpl,listOfFam,code, tag):
     elif tag in listOfPpl[-1]:
         listOfPpl[-1][tag] = " ".join(code)
     elif tag in listOfFam[-1]:
+        if tag == 'HUSB' or tag == 'WIFE':
+            for ppl in listOfPpl:
+                if " ".join(code) == ppl['ID'] :
+                    listOfFam[-1][tag+'NAME'] = ppl['NAME']
         listOfFam[-1][tag] = " ".join(code)
+
 
 def saveInfoTwoTag(listOfPpl,listOfFam,code, tag):
     #Dictionary that will contain the info on each indi or fam
-    print code
-    print tag
     if tag == 'BIRT' or tag == 'DEAT':
         listOfPpl[-1][tag] = " ".join(code)
     elif tag == 'DIV' or tag == 'MARR':
@@ -119,19 +118,6 @@ def saveInfo(listOfPpl,listOfFam,lines):
 
         #Checks if it is 2 tag which must be for the a Date
         elif row[0] == '2':
-            # if row[1] == 'DATE':
-            #     if listOfPpl[-1]['BIRT'] and not isinstance(listOfPpl[-1]['BIRT'], str):
-            #         listOfPpl[-1]['BIRT'] = " ".join(row[2:])
-            #
-            #     elif listOfPpl[-1]['DEAT'] and not isinstance(listOfPpl[-1]['DEAT'], str):
-            #         listOfPpl[-1]['DEAT'] = " ".join(row[2:])
-            #
-            #     elif (listOfFam[-1]['MARR'] and not isinstance(listOfFam[-1]['MARR'], str)):
-            #         listOfFam[-1]['MARR'] = " ".join(row[2:])
-            #
-            #     elif (listOfFam[-1]['DIV'] and not isinstance(listOfFam[-1]['DIV'], str)):
-            #         listOfFam[-1]['DIV'] = " ".join(row[2:])
-
             prevTag =  re.split(r'\s',lines[count-1].strip())[1]
 
             saveInfoTwoTag(listOfPpl,listOfFam,row[2:],prevTag)
