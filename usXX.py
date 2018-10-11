@@ -99,7 +99,7 @@ class utilities_US:
                 if(relativedelta(birth,divorce).years>0 or relativedelta(birth,divorce).months>=9):
                     return 0
 
-    
+
 
     def US13(ppl,siblings):
         sibsBday = {}
@@ -265,12 +265,14 @@ class utilities_US:
         wife = family['WIFE']
         descendents = get_desc(individuals, family, families)
 
+        print family
+        print descendents
         if husband in descendents:
-            return False
-        elif wife in descendents:
-            return False
-        else:
             return True
+        elif wife in descendents:
+            return True
+        else:
+            return False
 
     def get_desc(individuals, family, allFam):
         """Function finds children within family, calls get_lower_desc if grandchildren found"""

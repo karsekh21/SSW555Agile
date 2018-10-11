@@ -53,7 +53,7 @@ def checkTags(row,file):
 
 def saveInfoZeroTag(listOfPpl,listOfFam,code, tag):
     #Dictionary that will contain the info on each indi or fam
-    randIndi = {'ID':'N/A','NAME':'N/A','SEX':'N/A','AGE':'N/A','BIRT':'N/A','DEAT':'N/A','FAMC':'N/A','FAMS':'N/A','ALIVE':True}
+    randIndi = {'ID':'N/A','NAME':'N/A','SEX':'N/A','AGE':'N/A','BIRT':'N/A','DEAT':'N/A','FAMC':list(),'FAMS':list(),'ALIVE':True}
     randFam = {'ID':'N/A','MARR':'N/A','DIV':'N/A','HUSB':'N/A','HUSBNAME':'N/A','WIFE':'N/A','WIFENAME':'N/A','CHIL':list()}
     if (tag == 'INDI'):
         randIndi['ID'] = code
@@ -78,6 +78,9 @@ def saveInfoOneTag(listOfPpl,listOfFam,code, tag):
 
     elif tag == 'CHIL':
         listOfFam[-1][tag].append(" ".join(code))
+
+    elif tag == 'FAMC' or tag == 'FAMS':
+        listOfPpl[-1][tag].append(" ".join(code))
 
     elif tag in listOfPpl[-1]:
         listOfPpl[-1][tag] = " ".join(code)
@@ -151,36 +154,39 @@ def checkDeatBeforeBirt(birth,death):
 
 #Makes sure that person's dates are before current date
 def US01(ppl,fam):
-	if(ppl['FAMS']==fam['ID']):
-		birth = datetime.strptime(ppl['BIRT'],'%d %b %Y')
-		death=datetime.today()
-		divorce=datetime.today()
-		marriage=datetime.strptime(fam['MARR'],'%d %b %Y')
-		current=datetime.today()
-		if(ppl['ALIVE']==False):
-			death = datetime.strptime(ppl['DEAT'],'%d %b %Y')
-		if(fam['DIV']!='N/A'):
-			divorce=datetime.strptime(fam['DIV'],'%d %b %Y')
-		if(birth>current or death>current or divorce>current or marriage>current):
-			return False
-	if(ppl['FAMC']==fam['ID']):
-		birth = datetime.strptime(ppl['BIRT'],'%d %b %Y')
-		death=datetime.today()
-		current=datetime.today()
-		if(ppl['ALIVE']==False):
-			death = datetime.strptime(ppl['DEAT'],'%d %b %Y')
-		if(birth>current or death>current):
-			return False
-	return True;
+    for x in ppl['FAMS'] :
+    	if(x==fam['ID']):
+    		birth = datetime.strptime(ppl['BIRT'],'%d %b %Y')
+    		death=datetime.today()
+    		divorce=datetime.today()
+    		marriage=datetime.strptime(fam['MARR'],'%d %b %Y')
+    		current=datetime.today()
+    		if(ppl['ALIVE']==False):
+    			death = datetime.strptime(ppl['DEAT'],'%d %b %Y')
+    		if(fam['DIV']!='N/A'):
+    			divorce=datetime.strptime(fam['DIV'],'%d %b %Y')
+    		if(birth>current or death>current or divorce>current or marriage>current):
+    			return False
+    for x in ppl['FAMC']:
+    	if(x==fam['ID']):
+    		birth = datetime.strptime(ppl['BIRT'],'%d %b %Y')
+    		death=datetime.today()
+    		current=datetime.today()
+    		if(ppl['ALIVE']==False):
+    			death = datetime.strptime(ppl['DEAT'],'%d %b %Y')
+    		if(birth>current or death>current):
+    			return False
+	return True
 
 #makes sure that birth comes before marriage
 def US02(ppl,fam):
-	if(ppl['FAMS']==fam['ID']):
-		marriage=datetime.strptime(fam['MARR'],'%d %b %Y')
-		birth = datetime.strptime(ppl['BIRT'],'%d %b %Y')
-		if(marriage<birth):
-			return False
-	return True
+    for x in ppl['FAMS'] :
+    	if(x==fam['ID']):
+    		marriage=datetime.strptime(fam['MARR'],'%d %b %Y')
+    		birth = datetime.strptime(ppl['BIRT'],'%d %b %Y')
+    		if(marriage<birth):
+    			return False
+    	return True
 
 def US03(ppl):
 	if (ppl['ALIVE']==True):
@@ -205,22 +211,26 @@ def US04(fam):
 
 #makes sure that marriage occurs before death
 def US05(ppl, fam):
-	if (fam['MARR']!='N/A' and ppl['DEAT']!='N/A'):
-		if(fam['ID']==ppl['FAMS']):
-			death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
-			married=datetime.strptime(fam['MARR'], '%d %b %Y')
-			if(death<married):
-				return False
-	return True;
+    if (fam['MARR']!='N/A' and ppl['DEAT']!='N/A'):
+        for x in ppl['FAMS']:
+    		if(fam['ID']==x):
+    			death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+    			married=datetime.strptime(fam['MARR'], '%d %b %Y')
+
+    			if(death<married):
+    				return False
+
+	return True
 
 #makes sure that divorce occurs before death
 def US06(ppl,fam):
-	if(ppl['FAMS']==fam['ID'] and fam['DIV']!='N/A'and ppl['DEAT']!='N/A'):
-		death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
-		divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
-		if(death<divorce):
-			return False
-	return True;
+    for x in ppl['FAMS'] :
+    	if(x==fam['ID'] and fam['DIV']!='N/A'and ppl['DEAT']!='N/A'):
+    		death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+    		divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
+    		if(death<divorce):
+    			return False
+    	return True
 
 #makes sure age is <150
 def US07(age):
@@ -230,15 +240,16 @@ def US07(age):
 
 #makes sure child is born after their parents' marriage and no more than 9 months after divorce
 def US08(ppl,fam):
-    if(fam['ID']==ppl['FAMC']):
-        birth=datetime.strptime(ppl['BIRT'], '%d %b %Y')
-        married=datetime.strptime(fam['MARR'], '%d %b %Y')
-        if(birth<married):
-            return -1
-        elif(fam['DIV']!='N/A'):
-            divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
-            if(relativedelta(birth,divorce).years>0 or relativedelta(birth,divorce).months>=9):
-                return 0
+    for x in ppl['FAMC'] :
+        if(fam['ID']==x):
+            birth=datetime.strptime(ppl['BIRT'], '%d %b %Y')
+            married=datetime.strptime(fam['MARR'], '%d %b %Y')
+            if(birth<married):
+                return -1
+            elif(fam['DIV']!='N/A'):
+                divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
+                if(relativedelta(birth,divorce).years>0 or relativedelta(birth,divorce).months>=9):
+                    return 0
 
 
 
@@ -403,16 +414,23 @@ def get_males(families, people):
 
 def no_marr_to_desc(individuals, family, families):
     """Main function to check children/descendents against Husband/Wife of family"""
-    husband = family['HUSB']
-    wife = family['WIFE']
-    descendents = get_desc(individuals, family, families)
+    descendents = []
+    husband = ''
+    wife = ''
+    for x in family:
+        for y in families:
+            if x==y['ID']:
+                husband = y['HUSB']
+                wife = y['WIFE']
+                descendents += get_desc(individuals, y, families)
+
 
     if husband in descendents:
-        return False
-    elif wife in descendents:
-        return False
-    else:
         return True
+    elif wife in descendents:
+        return True
+    else:
+        return False
 
 def get_desc(individuals, family, allFam):
     """Function finds children within family, calls get_lower_desc if grandchildren found"""
@@ -558,6 +576,15 @@ def print_stuff(listOfPpl,listOfFam):
     for fam in listOfFam:
         if len(fam['CHIL']) >=15:
             print "Error US14: More then 15 siblings in the family "+ fam['ID']
+
+    #US15
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if  no_marr_to_desc(ppl,ppl['FAMS'],listOfFam):
+                print "Error US15:"+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
+                break
+
+
 
 #readGED takes in the specified GED file from the user
 #Opens the GED file and store each indi and fam in a list
