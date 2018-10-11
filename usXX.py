@@ -99,6 +99,21 @@ class utilities_US:
                 if(relativedelta(birth,divorce).years>0 or relativedelta(birth,divorce).months>=9):
                     return 0
 
+    
+
+    def US13(ppl,siblings):
+        sibsBday = {}
+        for sib in siblings:
+            for indi in ppl:
+                if sib == indi['ID']:
+                    if indi['BIRT'] in sibsBday:
+                        sibsBday[indi['BIRT']]+=1
+                        if sibsBday[indi['BIRT']] == 5:
+                            return False
+                    else:
+                        sibsBday[indi['BIRT']]=1
+        return True
+
     def find_age(start, end):
         """Parse strings as date objects and compare them to get age"""
         try:

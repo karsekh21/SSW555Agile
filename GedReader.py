@@ -240,6 +240,22 @@ def US08(ppl,fam):
             if(relativedelta(birth,divorce).years>0 or relativedelta(birth,divorce).months>=9):
                 return 0
 
+
+
+def US13(ppl,siblings):
+    sibsBday = {}
+    for sib in siblings:
+        for indi in ppl:
+            if sib == indi['ID']:
+                if indi['BIRT'] in sibsBday:
+                    sibsBday[indi['BIRT']]+=1
+                    if sibsBday[indi['BIRT']] == 5:
+                        return False
+                else:
+                    sibsBday[indi['BIRT']]=1
+    return True
+
+
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
     try:
@@ -530,6 +546,18 @@ def print_stuff(listOfPpl,listOfFam):
               print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs > 9 months after his/her parents' divorce date in Family ",fam['ID'],"."
             if(US08(ppl,fam)==-1):
               print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs before parents' marriage date in Family ",fam['ID'],"."
+
+
+    #US13
+    for fam in listOfFam:
+        if len(fam['CHIL']) >=5:
+            if(not US13(listOfPpl,fam['CHIL'])):
+                print "Error US13: 5 siblings with the same birthdate in family "+ fam['ID']
+
+    #US14
+    for fam in listOfFam:
+        if len(fam['CHIL']) >=15:
+            print "Error US14: More then 15 siblings in the family "+ fam['ID']
 
 #readGED takes in the specified GED file from the user
 #Opens the GED file and store each indi and fam in a list
