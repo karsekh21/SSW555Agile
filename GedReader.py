@@ -347,7 +347,10 @@ def husb_not_too_old(fam, indivs):
         return True
     else:
         husb = fam["HUSB"]
-        return find_age(indivs[husb]["BIRT"], get_oldest_child_birth(fam, indivs)) < 80
+        for i in indivs:
+            if i['ID'] == husb:
+                b = i['BIRT']
+        return find_age(b , get_oldest_child_birth(fam, indivs)) < 80
 
 def wife_not_too_old(fam, indivs):
     """Check if mother is too old"""
@@ -355,13 +358,21 @@ def wife_not_too_old(fam, indivs):
         return True
     else:
         wife = fam["WIFE"]
-        return find_age(indivs[wife]["BIRT"], get_oldest_child_birth(fam, indivs)) < 60
+        for i in indivs:
+            if i['ID'] == wife:
+                b = i['BIRT']
+        return find_age(b , get_oldest_child_birth(fam, indivs)) < 60
 
 def get_oldest_child_birth(fam, indivs):
     """Gets birth date of eldest child or return false"""
     if "CHIL" in fam:
         children = fam["CHIL"]
-        oldest_child_birth = indivs[children[0]]["BIRT"]
+        oldest_child_birth = ''
+        if children == []:
+            return False
+        for i in indivs:
+            if i['ID'] == children[0]:
+                oldest_child_birth = i["BIRT"]
         for child in children:
             if child in indivs and date_first(indivs[child]["BIRT"], oldest_child_birth):
                 oldest_child_birth = indivs[child]["BIRT"]
@@ -565,6 +576,10 @@ def print_stuff(listOfPpl,listOfFam):
             if(US08(ppl,fam)==-1):
               print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs before parents' marriage date in Family ",fam['ID'],"."
 
+    #US12
+    for fam in listOfFam:
+        if husb_not_too_old(fam,listOfPpl) and wife_not_too_old(fam,listOfPpl):
+            print 'h'
 
     #US13
     for fam in listOfFam:
