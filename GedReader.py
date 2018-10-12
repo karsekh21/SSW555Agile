@@ -176,7 +176,8 @@ def US01(ppl,fam):
     			death = datetime.strptime(ppl['DEAT'],'%d %b %Y')
     		if(birth>current or death>current):
     			return False
-	return True
+    return True
+
 
 #makes sure that birth comes before marriage
 def US02(ppl,fam):
@@ -188,6 +189,7 @@ def US02(ppl,fam):
     			return False
     	return True
 
+#makes sure birth comes before death
 def US03(ppl):
 	if (ppl['ALIVE']==True):
 		return True
@@ -250,6 +252,7 @@ def US08(ppl,fam):
                 divorce=datetime.strptime(fam['DIV'], '%d %b %Y')
                 if(relativedelta(birth,divorce).years>0 or relativedelta(birth,divorce).months>=9):
                     return 0
+    return 1
 
 
 
