@@ -254,7 +254,8 @@ def US08(ppl,fam):
                     return 0
     return 1
 
-
+def US12(fam,listOfPpl):
+    return not husb_not_too_old(fam,listOfPpl) or not wife_not_too_old(fam,listOfPpl)
 
 def US13(ppl,siblings):
     sibsBday = {}
@@ -263,12 +264,17 @@ def US13(ppl,siblings):
             if sib == indi['ID']:
                 if indi['BIRT'] in sibsBday:
                     sibsBday[indi['BIRT']]+=1
-                    if sibsBday[indi['BIRT']] == 5:
+                    if sibsBday[indi['BIRT']] >= 5:
                         return False
                 else:
                     sibsBday[indi['BIRT']]=1
     return True
 
+def US14(fam):
+    return len(fam['CHIL']) >=15
+
+def US16(individuals, family, families):
+    return no_marr_to_desc(individuals, family, families)
 
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
@@ -398,11 +404,6 @@ def multiple_births(indiv, fam):
                 return False
     return True
 
-def fewer_than_15_siblings(fam):
-    if 'CHIL' in fam:
-        return len(fam['CHIL']) < 15
-    return True
-
 def male_last_names(inds, males):
     """Checks male last names, returns appropriate Boolean for if all male last names consistent"""
     lastNames = []
@@ -437,7 +438,6 @@ def no_marr_to_desc(individuals, family, families):
                 husband = y['HUSB']
                 wife = y['WIFE']
                 descendents += get_desc(individuals, y, families)
-
 
     if husband in descendents:
         return True
@@ -581,24 +581,24 @@ def print_stuff(listOfPpl,listOfFam):
 
     #US12
     for fam in listOfFam:
-        if husb_not_too_old(fam,listOfPpl) and wife_not_too_old(fam,listOfPpl):
-            print 'h'
+        if US12(fam,listOfPpl):
+            print 'Error US12: A mom is 60 yrs older then child or a dad is 80 yrs older then child in Family '+fam['ID']
 
     #US13
     for fam in listOfFam:
         if len(fam['CHIL']) >=5:
-            if(not US13(listOfPpl,fam['CHIL'])):
+            if(US13(listOfPpl,fam['CHIL'])):
                 print "Error US13: 5 siblings with the same birthdate in family "+ fam['ID']
 
     #US14
     for fam in listOfFam:
-        if len(fam['CHIL']) >=15:
+        if US14(fam):
             print "Error US14: More then 15 siblings in the family "+ fam['ID']
 
-    #US15
+    #US16
     for ppl in listOfPpl:
         for fam in listOfFam:
-            if  no_marr_to_desc(ppl,ppl['FAMS'],listOfFam):
+            if  US16(ppl,ppl['FAMS'],listOfFam):
                 print "Error US15: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
