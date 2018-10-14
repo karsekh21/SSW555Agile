@@ -599,7 +599,7 @@ def print_stuff(listOfPpl,listOfFam):
     for ppl in listOfPpl:
         for fam in listOfFam:
             if  no_marr_to_desc(ppl,ppl['FAMS'],listOfFam):
-                print "Error US15:"+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
+                print "Error US15: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
 
