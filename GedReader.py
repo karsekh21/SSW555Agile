@@ -254,6 +254,15 @@ def US08(ppl,fam):
                     return 0
     return 1
 
+def US09(ppl, fam, listOfFam):
+    return death_before_conception(ppl, fam, listOfFam)
+
+def US10(ppl, fam, listOfPpl):
+    return Husb(ppl, fam, listOfPpl) and Wife(ppl, fam, listOfPpl)
+
+# def US11(ppl, fam):
+#     return no_bigamy(ppl, fam)
+
 def US12(fam,listOfPpl):
     return not husb_not_too_old(fam,listOfPpl) or not wife_not_too_old(fam,listOfPpl)
 
@@ -273,6 +282,13 @@ def US13(ppl,siblings):
 def US14(fam):
     return len(fam['CHIL']) >=15
 
+def US15(ppl, fam, listOfPpl):
+    males = []
+    for ppl in listOfPpl:
+        if ppl['SEX'] == 'M':
+            males.append(ppl)
+    return male_last_names(ppl, males)
+
 def US16(individuals, family, families):
     return no_marr_to_desc(individuals, family, families)
 
@@ -286,21 +302,29 @@ def find_age(start, end):
     except ValueError:
         return 'NA'
 
-def husb_marr_after_14(indiv, fam):
+def Husb(indiv, fam, listOfPpl):
     """Checks if husband is older than 14 when married"""
     if not 'MARR' in fam:
         return False
 
-    husb = fam['HUSB']
-    return find_age(indiv[husb]['BIRT'], fam['MARR']) >= 14
+    for ppl in listOfPpl:
+        if ppl['ID'] == fam['HUSB']:
+            birth = ppl['BIRT']
+            marr = fam['MARR']
 
-def wife_marr_after_14(indiv, fam):
+    return find_age(birth, marr) >= 14
+
+def Wife(indiv, fam):
     """Checks if wife is older than 14 when married"""
     if not 'MARR' in fam:
         return False
 
-    wife = fam['WIFE']
-    return find_age(indiv[wife]['BIRT'], fam['MARR']) >= 14
+    for ppl in listOfPpl:
+        if ppl['ID'] == fam['WIFE']:
+            birth = ppl['BIRT']
+            marr = fam['MARR']
+
+    return find_age(birth, marr) >= 14
 
 def date_within_9mo(date1, date2):
     """Checks if date1 comes 9 months within date2"""
@@ -323,23 +347,24 @@ def date_first(date1, date2):
     except ValueError:
         return False
 
-def no_bigamy(indiv, fams):
-    """Checks that individuals were not spouses in multiple families at the same time"""
-    if "FAMS" in indiv and len(indiv["FAMS"]) > 1:
-        spouse = "HUSB" if indiv["SEX"] == "F" else "WIFE"
-        all_marrs = {}
-
-        for fam in indiv["FAMS"]:
-            if not "MARR" in fams[fam]:
-                pass
-            else:
-                if "DIV" in fams[fam]:
-                    curr_marr = (fams[fam]["MARR"], fams[fam]["DIV"])
-                elif "DEAT" in fams[fam][spouse]:
-                    curr_marr = (fams[fam]["MARR"], spouse["DEAT"])
-                else:
-                    curr_marr = (fams[fam]["MARR"], time.strftime("%d %b %Y"))
-                all_marrs[fam] = curr_marr
+# def no_bigamy(indiv, fams):
+#     """Checks that individuals were not spouses in multiple families at the same time"""
+#     if "FAMS" in indiv and len(indiv["FAMS"]) > 1:
+#         spouse = "HUSB" if indiv["SEX"] == "F" else "WIFE"
+#         all_marrs = {}
+#         for ppl in listOfPpl:
+#             for fam in indiv["FAMS"]:
+#                 if not "MARR" in fam:
+#                     pass
+#                 else:
+#                     if "DIV" in fam:
+#                         curr_marr = (fam["MARR"], fam["DIV"])
+#                     elif "DEAT" in fam:
+#                         if fam['HUSB'] == 
+#                         curr_marr = (fam["MARR"], spouse["DEAT"])
+#                     else:
+#                         curr_marr = (fams[fam]["MARR"], time.strftime("%d %b %Y"))
+#                     all_marrs[fam] = curr_marr
 
         for fam in indiv["FAMS"]:
             for marr_fam in all_marrs:
@@ -413,7 +438,7 @@ def male_last_names(inds, males):
 
 def get_last_name(people, individual):
     """Finds last name from Individual dictionary"""
-    surname = people[individual]['NAME'].split()
+    surname = people['NAME'].split()
     return surname[1]
 
 def get_males(families, people):
@@ -473,7 +498,7 @@ def get_lower_desc(family, families):
         desc.extend(families[family]['CHIL'])
     return desc
 
-def birth_before_parents_death(indiv, fam):
+def death_before_conception(indiv, fam, listOfFam):
     """Returns if mother or father died before birth/conception"""
     if not 'MARR' in fam:
         return False
@@ -481,28 +506,34 @@ def birth_before_parents_death(indiv, fam):
     if not 'CHIL' in fam:
         return True
 
-    return wife_check(indiv, fam['CHIL'], fam) and husb_check(indiv, fam['CHIL'], fam)
+    return wife_check(indiv, fam, listOfFam) and husb_check(indiv, fam, listOfFam)
 
-def wife_check(indiv, children, fam):
+def wife_check(ppl, fam, listOfPpl):
     """Checks if wife died before birth of child"""
-    wife = fam['WIFE']
-    if not 'DEAT' in indiv[wife]:
-        return True
-
+    children = []
+    for ppl in listOfPpl:
+        if ppl['DEAT'] == 'N/A':
+            if ppl['ID'] == fam['WIFE']:
+                return True
+        if ppl['FAMC'] == fam['ID']:
+            children.append(ppl)
     for child in children:
-        if date_first(indiv[wife]['DEAT'], indiv[child]['BIRT']):
+        if date_first(ppl['DEAT'], ppl['BIRT']):
             return False
 
     return True
 
-def husb_check(indiv, children, fam):
+def husb_check(ppl, fam, listOfPpl):
     """Checks if husband died before possible conception of child"""
-    husb = fam['HUSB']
-    if not 'DEAT' in indiv[husb]:
-        return True
-
+    children = []
+    for ppl in listOfPpl:
+        if ppl['DEAT'] == 'N/A':
+            if ppl['ID'] == fam['HUSB']:
+                return True
+        if ppl['FAMC'] == fam['ID']:
+            children.append(ppl)
     for child in children:
-        if date_within_9mo(indiv[child]['BIRT'], indiv[husb]['DEAT']):
+        if date_within_9mo(ppl['BIRT'], ppl['DEAT']):
             return False
 
     return True
@@ -579,6 +610,24 @@ def print_stuff(listOfPpl,listOfFam):
             if(US08(ppl,fam)==-1):
               print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs before parents' marriage date in Family ",fam['ID'],"."
 
+    #US09
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if US09(ppl, fam, listOfPpl):
+                print "Error US09: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs before conception in Family ",fam['ID'],"."
+
+    #US10
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if not US10(ppl, fam, listOfPpl):
+                print "Error US10: " + ppl['ID'] + " " + ppl['NAME'] + " married before the age of 14."
+    
+    # #US11
+    # for ppl in listOfPpl:
+    #     for fam in listOfFam:
+    #         if not US11(ppl, fam):
+    #             print "Error US11: " + ppl['ID'] + " " + ppl['NAME'] + " is married to multiple people."
+
     #US12
     for fam in listOfFam:
         if US12(fam,listOfPpl):
@@ -595,11 +644,17 @@ def print_stuff(listOfPpl,listOfFam):
         if US14(fam):
             print "Error US14: More then 15 siblings in the family "+ fam['ID']
 
+    #US15
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if (US15(ppl, fam,listOfPpl) == False):
+                print "Error US15: " +ppl['NAME'],"(",ppl['ID'],")"+ " is not consistent with " + fam['ID'] + " last names"
+
     #US16
     for ppl in listOfPpl:
         for fam in listOfFam:
             if  US16(ppl,ppl['FAMS'],listOfFam):
-                print "Error US15: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
+                print "Error US16: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
 
