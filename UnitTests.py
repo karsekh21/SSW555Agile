@@ -1,6 +1,6 @@
 import unittest
 
-from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US12,US13,US14,US16
+from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US13,US14,US16
 from datetime import datetime, date
 
 class TestUserStories(unittest.TestCase):
@@ -20,6 +20,10 @@ class TestUserStories(unittest.TestCase):
 		self.assertEqual(US07(149),True)
     def test_US08(self):
 		self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
+    def test_US09(self):
+        self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
+    def test_US10(self):
+        self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
     def test_US12(self):
         listOfPpl=[]
         joe = {'BIRT': '15 JUL 1600', 'FAMS': 'F23', 'NAME': 'Joe /Smith/', 'ALIVE': False, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I01', 'DEAT': '31 DEC 1900', 'SEX': 'M'}
@@ -54,6 +58,8 @@ class TestUserStories(unittest.TestCase):
 
         fam = {'CHIL':listofChildren}
         self.assertEqual(US14(fam),True)
+    def test_US15(self):
+        self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
     def test_US16(self):
         listOfPpl=[]
         listOfFam=[]
