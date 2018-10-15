@@ -587,7 +587,7 @@ def print_stuff(listOfPpl,listOfFam):
     #US13
     for fam in listOfFam:
         if len(fam['CHIL']) >=5:
-            if(US13(listOfPpl,fam['CHIL'])):
+            if(not US13(listOfPpl,fam['CHIL'])):
                 print "Error US13: 5 siblings with the same birthdate in family "+ fam['ID']
 
     #US14
