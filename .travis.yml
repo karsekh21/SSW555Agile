@@ -5,6 +5,8 @@ python:
 #command to install dependencies
 install:
  - pip install prettytable
+ - pip install python-dateutil
+ - pip install DateTime
 # command to run tests
 script:
  - python -m unittest UnitTests
