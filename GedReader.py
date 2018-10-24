@@ -292,6 +292,25 @@ def US15(ppl, fam, listOfPpl):
 def US16(individuals, family, families):
     return no_marr_to_desc(individuals, family, families)
 
+def US21(ppl, fam):
+    if ppl['ID'] == fam['HUSB']:
+        return ppl['SEX'] == 'M'
+    elif ppl['ID'] == fam['WIFE']:
+        return ppl['SEX'] == 'F'
+    else:
+        return False
+
+def US22(ppl, listOfPpl):
+    for ppl in listOfPpl:
+        rawID = ppl['ID']
+    
+    return check_ID(ppl, rawID)
+
+def check_ID(ppl, ID):
+    if len(ppl['ID']) < len(ppl):
+        return False
+    return True
+
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
     try:
@@ -657,6 +676,17 @@ def print_stuff(listOfPpl,listOfFam):
                 print "Error US16: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
+    #US21
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if US21(ppl, fam) == False:
+                print "Error US21: "+ppl['NAME'],"(",ppl['ID'],")"+ " is not the correct gender"
+    
+    #US22
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if US22(ppl, listOfPpl) == False:
+                print "Error US22: "+ppl['NAME'],"(",ppl['ID'],")"+ " has an inconsistent ID"
 
 
 #readGED takes in the specified GED file from the user
