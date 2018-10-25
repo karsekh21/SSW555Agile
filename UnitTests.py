@@ -1,6 +1,6 @@
 import unittest
 
-from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US13,US14,US16,US18,US23,US24,US25
+from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US13,US14,US16,US18,US21, US22, US23,US24,US25
 from datetime import datetime, date
 
 class TestUserStories(unittest.TestCase):
@@ -79,6 +79,10 @@ class TestUserStories(unittest.TestCase):
         self.assertEqual(US16(joe,'F100',listOfFam),False)
     def test_US18(self):
         self.assertEqual(US18({'ID':'I1','FAMS':['F1'], 'FAMC':['F2']},[{'ID':'I2', 'FAMS':['F1'], 'FAMC':['F2']}]),False)
+    def test_US21(self):
+        self.assertEqual(US21({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'F'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
+    def test_US22(self):
+        self.assertEqual(US22({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'M'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
     def test_US23(self):
         self.assertEqual(US23({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
     def test_US24(self):
