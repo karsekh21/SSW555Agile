@@ -361,6 +361,21 @@ def US20(fam,listOfFam,listOfPpl):
     elif (not set(husb['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[1],listOfPpl)]['FAMC'])):
         return False
     return True
+
+def US21(ppl, fam):
+    if ppl['ID'] == fam['HUSB']:
+        return ppl['SEX'] == 'M'
+    elif ppl['ID'] == fam['WIFE']:
+        return ppl['SEX'] == 'F'
+    else:
+        return False
+
+def US22(ppl, listOfPpl):
+    for ppl in listOfPpl:
+        rawID = ppl['ID']
+    
+    return check_ID(ppl, rawID)
+
 >>>>>>> 3sprint
 
 def find_age(start, end):
@@ -766,6 +781,17 @@ def print_stuff(listOfPpl,listOfFam):
     for fam in listOfFam:
         if not (US20(fam,listOfFam,listOfPpl)):
             print "Error US20: Family "+fam['ID']+" has first a niece married to a Uncle/Aunt."
+    
+    #US21
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if US21(ppl, fam) == False:
+                print "Error US21: "+ppl['NAME'],"(",ppl['ID'],")"+ " is not the correct gender"
+    #US22
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if US22(ppl, listOfPpl) == False:
+                print "Error US22: "+ppl['NAME'],"(",ppl['ID'],")"+ " has an inconsistent ID"
     #US18
     for ppl in listOfPpl:
             if (US18(ppl,listOfPpl)==False):
