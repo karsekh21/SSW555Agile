@@ -292,7 +292,7 @@ def US15(ppl, fam, listOfPpl):
 def US16(individuals, family, families):
     return no_marr_to_desc(individuals, family, families)
 
-<<<<<<< HEAD
+
 def US18(ppl,listOfPpl):
     if(ppl['FAMS']==[]):
         return True
@@ -323,7 +323,6 @@ def US25(ppl,listOfPpl):
     return True
 
 
-=======
 def US19(fam,listOfFam,listOfPpl):
     husb = listOfPpl[findPersonInList(fam['HUSB'],listOfPpl)]
     wife = listOfPpl[findPersonInList(fam['WIFE'],listOfPpl)]
@@ -361,7 +360,6 @@ def US20(fam,listOfFam,listOfPpl):
     elif (not set(husb['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[1],listOfPpl)]['FAMC'])):
         return False
     return True
->>>>>>> 3sprint
 
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
