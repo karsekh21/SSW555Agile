@@ -376,8 +376,6 @@ def US22(ppl, listOfPpl):
     
     return check_ID(ppl, rawID)
 
->>>>>>> 3sprint
-
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
     try:
