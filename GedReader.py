@@ -266,7 +266,7 @@ def US10(ppl, fam, listOfPpl):
 def US12(fam,listOfPpl):
     return not husb_not_too_old(fam,listOfPpl) or not wife_not_too_old(fam,listOfPpl)
 
-def US13(ppl,siblings):
+def US14(ppl,siblings):
     sibsBday = {}
     for sib in siblings:
         for indi in ppl:
@@ -279,17 +279,17 @@ def US13(ppl,siblings):
                     sibsBday[indi['BIRT']]=1
     return True
 
-def US14(fam):
+def US15(fam):
     return len(fam['CHIL']) >=15
 
-def US15(ppl, fam, listOfPpl):
+def US16(ppl, fam, listOfPpl):
     males = []
     for ppl in listOfPpl:
         if ppl['SEX'] == 'M':
             males.append(ppl)
     return male_last_names(ppl, males)
 
-def US16(individuals, family, families):
+def US17(individuals, family, families):
     return no_marr_to_desc(individuals, family, families)
 
 
@@ -742,28 +742,28 @@ def print_stuff(listOfPpl,listOfFam):
         if US12(fam,listOfPpl):
             print 'Error US12: A mom is 60 yrs older then child or a dad is 80 yrs older then child in Family '+fam['ID']
 
-    #US13
-    for fam in listOfFam:
-        if len(fam['CHIL']) >=5:
-            if(not US13(listOfPpl,fam['CHIL'])):
-                print "Error US13: 5 siblings with the same birthdate in family "+ fam['ID']
-
     #US14
     for fam in listOfFam:
-        if US14(fam):
-            print "Error US14: More then 15 siblings in the family "+ fam['ID']
+        if len(fam['CHIL']) >=5:
+            if(not US14(listOfPpl,fam['CHIL'])):
+                print "Error US14: 5 siblings with the same birthdate in family "+ fam['ID']
 
     #US15
-    for ppl in listOfPpl:
-        for fam in listOfFam:
-            if (US15(ppl, fam,listOfPpl) == False):
-                print "Error US15: " +ppl['NAME'],"(",ppl['ID'],")"+ " is not consistent with " + fam['ID'] + " last names"
+    for fam in listOfFam:
+        if US15(fam):
+            print "Error US15: More then 15 siblings in the family "+ fam['ID']
 
     #US16
     for ppl in listOfPpl:
         for fam in listOfFam:
-            if  US16(ppl,ppl['FAMS'],listOfFam):
-                print "Error US16: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
+            if (US16(ppl, fam,listOfPpl) == False):
+                print "Error US16: " +ppl['NAME'],"(",ppl['ID'],")"+ " is not consistent with " + fam['ID'] + " last names"
+
+    #US17
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if  US17(ppl,ppl['FAMS'],listOfFam):
+                print "Error US17: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
     #US19
