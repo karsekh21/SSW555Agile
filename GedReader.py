@@ -292,6 +292,7 @@ def US15(ppl, fam, listOfPpl):
 def US16(individuals, family, families):
     return no_marr_to_desc(individuals, family, families)
 
+<<<<<<< HEAD
 def US18(ppl,listOfPpl):
     if(ppl['FAMS']==[]):
         return True
@@ -322,6 +323,45 @@ def US25(ppl,listOfPpl):
     return True
 
 
+=======
+def US19(fam,listOfFam,listOfPpl):
+    husb = listOfPpl[findPersonInList(fam['HUSB'],listOfPpl)]
+    wife = listOfPpl[findPersonInList(fam['WIFE'],listOfPpl)]
+
+    husbP = find_Parent(husb,listOfFam)
+    wifeP = find_Parent(wife,listOfFam)
+
+
+    if husbP == [] or wifeP ==[]:
+        return True
+
+    if (not set(listOfPpl[findPersonInList(husbP[0],listOfPpl)]['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[1],listOfPpl)]['FAMC'])):
+        return False
+    elif (not set(listOfPpl[findPersonInList(husbP[1],listOfPpl)]['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[0],listOfPpl)]['FAMC'])):
+        return False
+    return True
+
+def US20(fam,listOfFam,listOfPpl):
+    husb = listOfPpl[findPersonInList(fam['HUSB'],listOfPpl)]
+    wife = listOfPpl[findPersonInList(fam['WIFE'],listOfPpl)]
+
+    husbP = find_Parent(husb,listOfFam)
+    wifeP = find_Parent(wife,listOfFam)
+
+
+    if husbP == [] or wifeP ==[]:
+        return True
+
+    if (not set(listOfPpl[findPersonInList(husbP[0],listOfPpl)]['FAMC']).isdisjoint(wife['FAMC'])):
+        return False
+    elif (not set(listOfPpl[findPersonInList(husbP[1],listOfPpl)]['FAMC']).isdisjoint(wife['FAMC'])):
+        return False
+    elif (not set(husb['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[0],listOfPpl)]['FAMC'])):
+        return False
+    elif (not set(husb['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[1],listOfPpl)]['FAMC'])):
+        return False
+    return True
+>>>>>>> 3sprint
 
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
@@ -391,7 +431,7 @@ def date_first(date1, date2):
 #                     if "DIV" in fam:
 #                         curr_marr = (fam["MARR"], fam["DIV"])
 #                     elif "DEAT" in fam:
-#                         if fam['HUSB'] == 
+#                         if fam['HUSB'] ==
 #                         curr_marr = (fam["MARR"], spouse["DEAT"])
 #                     else:
 #                         curr_marr = (fams[fam]["MARR"], time.strftime("%d %b %Y"))
@@ -569,6 +609,35 @@ def husb_check(ppl, fam, listOfPpl):
 
     return True
 
+def find_Parent(ppl,listOfFam):
+    listOfParents = []
+    for fam in listOfFam:
+        if ppl['FAMC'] == []:
+            return listOfParents
+        if ppl['FAMC'][0] == fam['ID']:
+            listOfParents.append(fam['HUSB'])
+            listOfParents.append(fam['WIFE'])
+    return listOfParents
+
+def find_Current_Spouse(ppl,listOfFam):
+    for fam in listOfFam:
+        if ppl['FAMS'] == []:
+            return 'N/A'
+        if ppl['FAMS'][-1] == fam['ID']:
+            if ppl['ID'] == fam['HUSB']:
+                return fam['WIFE']
+            elif ppl['ID'] == fam['WIFE']:
+                return fam['HUSB']
+    return 'N/A'
+
+def findPersonInList(pId,listOfPpl):
+    count = 0
+    while count < len(listOfPpl):
+        if pId == listOfPpl[count]['ID']:
+            return count
+        count+=1
+    return 'N/A'
+
 def print_stuff(listOfPpl,listOfFam):
 
     from prettytable import PrettyTable
@@ -652,7 +721,7 @@ def print_stuff(listOfPpl,listOfFam):
         for fam in listOfFam:
             if not US10(ppl, fam, listOfPpl):
                 print "Error US10: " + ppl['ID'] + " " + ppl['NAME'] + " married before the age of 14."
-    
+
     # #US11
     # for ppl in listOfPpl:
     #     for fam in listOfFam:
@@ -688,6 +757,15 @@ def print_stuff(listOfPpl,listOfFam):
                 print "Error US16: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
+    #US19
+    for fam in listOfFam:
+        if not (US19(fam,listOfFam,listOfPpl)):
+            print "Error US19: Family "+fam['ID']+" has first cousins that are married."
+
+    #US20
+    for fam in listOfFam:
+        if not (US20(fam,listOfFam,listOfPpl)):
+            print "Error US20: Family "+fam['ID']+" has first a niece married to a Uncle/Aunt."
     #US18
     for ppl in listOfPpl:
             if (US18(ppl,listOfPpl)==False):
