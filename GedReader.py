@@ -292,6 +292,37 @@ def US15(ppl, fam, listOfPpl):
 def US16(individuals, family, families):
     return no_marr_to_desc(individuals, family, families)
 
+def US18(ppl,listOfPpl):
+    if(ppl['FAMS']==[]):
+        return True
+
+    for siblings in listOfPpl:
+        if((not set(ppl['FAMC']).isdisjoint(siblings['FAMC'])) and ppl['ID']!=siblings['ID'] and (not set(ppl['FAMS']).isdisjoint(siblings['FAMS']))):
+            return False
+    return True
+
+def US23(ppl,listOfPpl):
+    for others in listOfPpl:
+        if(ppl['NAME']==others['NAME'] and ppl['BIRT']==others['BIRT'] and ppl['ID']!=others['ID']):
+            return False
+    return True
+
+def US24(fam, listOfFam):
+    for others in listOfFam:
+        if(fam['HUSBNAME']==others['HUSBNAME'] and fam['WIFENAME']==others['WIFENAME'] and fam['MARR']==others['MARR'] and fam['ID']!=others['ID']):
+            return False
+    return True
+
+def US25(ppl,listOfPpl):
+    if(ppl['FAMC']==[]):
+        return True
+    for siblings in listOfPpl:
+        if(ppl['NAME']==siblings['NAME'] and ppl['BIRT']==siblings['BIRT'] and ppl['ID']!=siblings['ID'] and (not set(ppl['FAMC']).isdisjoint(siblings['FAMC']))):
+            return False
+    return True
+
+
+
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
     try:
@@ -314,7 +345,7 @@ def Husb(indiv, fam, listOfPpl):
 
     return find_age(birth, marr) >= 14
 
-def Wife(indiv, fam):
+def Wife(indiv, fam,listOfPpl):
     """Checks if wife is older than 14 when married"""
     if not 'MARR' in fam:
         return False
@@ -656,6 +687,27 @@ def print_stuff(listOfPpl,listOfFam):
             if  US16(ppl,ppl['FAMS'],listOfFam):
                 print "Error US16: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
+
+    #US18
+    for ppl in listOfPpl:
+            if (US18(ppl,listOfPpl)==False):
+                print "Error US18: ",ppl['NAME'],"(",ppl['ID'],") is married to sibling"
+
+    #US23
+    for ppl in listOfPpl:
+        if(US23(ppl,listOfPpl)==False):
+            print "Error US23: ",ppl['NAME'],"(",ppl['ID'],") does not have a unique name and birthday"
+
+    #US24
+    for fam in listOfFam:
+        if(US24(fam,listOfFam)==False):
+            print "Error US24: Fam(",fam['ID'],") does not have unique couple names and marriage date"
+    #US25
+    for ppl in listOfPpl:
+        if(US25(ppl,listOfPpl)==False):
+            print "Error US25: ",ppl['NAME'],"(",ppl['ID'],") shares a Name and Birthday"
+
+
 
 
 
