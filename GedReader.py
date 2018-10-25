@@ -359,7 +359,6 @@ def US20(fam,listOfFam,listOfPpl):
         return False
     elif (not set(husb['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[1],listOfPpl)]['FAMC'])):
         return False
-    return True
 
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
@@ -764,6 +763,17 @@ def print_stuff(listOfPpl,listOfFam):
     for fam in listOfFam:
         if not (US20(fam,listOfFam,listOfPpl)):
             print "Error US20: Family "+fam['ID']+" has first a niece married to a Uncle/Aunt."
+
+    #US21
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if US21(ppl, fam) == False:
+                print "Error US21: "+ppl['NAME'],"(",ppl['ID'],")"+ " is not the correct gender"
+    #US22
+    for ppl in listOfPpl:
+        for fam in listOfFam:
+            if US22(ppl, listOfPpl) == False:
+                print "Error US22: "+ppl['NAME'],"(",ppl['ID'],")"+ " has an inconsistent ID"
     #US18
     for ppl in listOfPpl:
             if (US18(ppl,listOfPpl)==False):
