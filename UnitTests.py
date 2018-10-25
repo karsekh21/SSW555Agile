@@ -1,6 +1,6 @@
 import unittest
 
-from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US13,US14,US16,US18,US23,US24,US25
+from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US23,US24,US25
 from datetime import datetime, date
 
 class TestUserStories(unittest.TestCase):
