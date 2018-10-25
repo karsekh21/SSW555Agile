@@ -360,6 +360,18 @@ def US20(fam,listOfFam,listOfPpl):
     elif (not set(husb['FAMC']).isdisjoint(listOfPpl[findPersonInList(wifeP[1],listOfPpl)]['FAMC'])):
         return False
 
+def US21(ppl, fam):
+    if ppl['ID'] == fam['HUSB']:
+        return ppl['SEX'] == 'M'
+    elif ppl['ID'] == fam['WIFE']:
+        return ppl['SEX'] == 'F'
+    else:
+        return False
+
+def US22(ppl, listOfPpl):
+    for ppl in listOfPpl:
+        rawID = ppl['ID']
+
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
     try:
