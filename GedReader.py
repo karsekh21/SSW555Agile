@@ -783,7 +783,7 @@ def print_stuff(listOfPpl,listOfFam):
     #US20
     for fam in listOfFam:
         if not (US20(fam,listOfFam,listOfPpl)):
-            print "Error US20: Family "+fam['ID']+" has first a niece married to a Uncle/Aunt."
+            print "Error US20: Family "+fam['ID']+" has first a niece/nephew married to a Uncle/Aunt."
 
     #US21
     for ppl in listOfPpl:
