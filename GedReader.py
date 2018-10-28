@@ -284,10 +284,10 @@ def US15(fam):
 
 def US16(ppl, fam, listOfPpl):
     males = []
-    for ppl in listOfPpl:
-        if ppl['SEX'] == 'M':
-            males.append(ppl)
-    return male_last_names(ppl, males)
+    for ppls in listOfPpl:
+        if ppls['SEX'] == 'M':
+            males.append(ppls)
+    return male_last_names(ppls, males)
 
 def US17(individuals, family, families):
     return no_marr_to_desc(individuals, family, families)
@@ -513,7 +513,8 @@ def male_last_names(inds, males):
     """Checks male last names, returns appropriate Boolean for if all male last names consistent"""
     lastNames = []
     for male in males:
-        lastNames.append(get_last_name(inds, male))
+        lastNames.append(get_last_name(male,inds))
+
     return len(set(lastNames))==1
 
 def get_last_name(people, individual):
@@ -651,6 +652,9 @@ def print_stuff(listOfPpl,listOfFam):
 
     from prettytable import PrettyTable
 
+    print listOfPpl
+    print listOfFam
+
     ind_table=PrettyTable();
     fam_table=PrettyTable();
 
@@ -766,6 +770,11 @@ def print_stuff(listOfPpl,listOfFam):
                 print "Error US17: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
+    #US18
+    for ppl in listOfPpl:
+        if (US18(ppl,listOfPpl)==False):
+            print "Error US18: ",ppl['NAME'],"(",ppl['ID'],") is married to sibling"
+
     #US19
     for fam in listOfFam:
         if not (US19(fam,listOfFam,listOfPpl)):
@@ -786,10 +795,6 @@ def print_stuff(listOfPpl,listOfFam):
         for fam in listOfFam:
             if US22(ppl, listOfPpl) == False:
                 print "Error US22: "+ppl['NAME'],"(",ppl['ID'],")"+ " has an inconsistent ID"
-    #US18
-    for ppl in listOfPpl:
-            if (US18(ppl,listOfPpl)==False):
-                print "Error US18: ",ppl['NAME'],"(",ppl['ID'],") is married to sibling"
 
     #US23
     for ppl in listOfPpl:
