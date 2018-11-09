@@ -1,6 +1,10 @@
 import unittest
 
+
 from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US19,US20,US21,US22,US23,US24,US25,US34,US35,US36
+
+from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US19,US20,US21,US22,US23,US24,US25
+
 from datetime import datetime, date
 
 class TestUserStories(unittest.TestCase):
@@ -96,6 +100,7 @@ class TestUserStories(unittest.TestCase):
         listOfFam = [{'HUSBNAME': 'Joe /Dale/', 'CHIL': ['IUS193', 'IUS194'], 'MARR': '14 FEB 1960', 'WIFE': 'IUS192', 'DIV': 'N/A', 'HUSB': 'IUS191', 'ID': 'FUS191', 'WIFENAME': 'Jane /Dale/'}, {'HUSBNAME': 'Mom /Dale/', 'CHIL': ['IUS197'], 'MARR': '14 FEB 1980', 'WIFE': 'IUS195', 'DIV': 'N/A', 'HUSB': 'IUS193', 'ID': 'FUS192', 'WIFENAME': 'Dad /Dale/'}, {'HUSBNAME': 'Uncle /Dale/', 'CHIL': [], 'MARR': '14 FEB 2000', 'WIFE': 'IUS198', 'DIV': 'N/A', 'HUSB': 'IUS194', 'ID': 'FUS193', 'WIFENAME': 'Joe /Dale/'}]
 
         self.assertFalse(US20({'HUSBNAME': 'Uncle /Dale/', 'CHIL': [], 'MARR': '14 FEB 2000', 'WIFE': 'IUS198', 'DIV': 'N/A', 'HUSB': 'IUS194', 'ID': 'FUS193', 'WIFENAME': 'Joe /Dale/'},listOfFam,listOfPpl))
+
     #def test_US21(self):
         #self.assertEqual(US21({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'F'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
     #def test_US22(self):
@@ -112,10 +117,6 @@ class TestUserStories(unittest.TestCase):
         self.assertTrue(US35({'BIRT':'5 NOV 2018'}))
     def test_US36(self):
         self.assertTrue(US36({'DEAT':'5 NOV 2018'}))
-
-    #def test_US36(self):
-
-
 
 
 

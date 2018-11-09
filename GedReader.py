@@ -372,6 +372,7 @@ def US22(ppl, listOfPpl):
     for ppl in listOfPpl:
         rawID = ppl['ID']
 
+
 def US34(ppl, listOfFam,listOfPpl):
     if(ppl['FAMC']==[]):
         return False
@@ -403,6 +404,7 @@ def US36(ppl):
         return True
     else:
         return False
+
 
 
 def find_age(start, end):
@@ -685,8 +687,11 @@ def print_stuff(listOfPpl,listOfFam):
 
     from prettytable import PrettyTable
 
+
     #print listOfPpl
     #print listOfFam
+
+
 
     ind_table=PrettyTable();
     fam_table=PrettyTable();
