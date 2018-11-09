@@ -1,6 +1,10 @@
 import unittest
 
+
+from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US19,US20,US21,US22,US23,US24,US25,US34,US35,US36
+
 from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US19,US20,US21,US22,US23,US24,US25
+
 from datetime import datetime, date
 
 class TestUserStories(unittest.TestCase):
@@ -96,19 +100,23 @@ class TestUserStories(unittest.TestCase):
         listOfFam = [{'HUSBNAME': 'Joe /Dale/', 'CHIL': ['IUS193', 'IUS194'], 'MARR': '14 FEB 1960', 'WIFE': 'IUS192', 'DIV': 'N/A', 'HUSB': 'IUS191', 'ID': 'FUS191', 'WIFENAME': 'Jane /Dale/'}, {'HUSBNAME': 'Mom /Dale/', 'CHIL': ['IUS197'], 'MARR': '14 FEB 1980', 'WIFE': 'IUS195', 'DIV': 'N/A', 'HUSB': 'IUS193', 'ID': 'FUS192', 'WIFENAME': 'Dad /Dale/'}, {'HUSBNAME': 'Uncle /Dale/', 'CHIL': [], 'MARR': '14 FEB 2000', 'WIFE': 'IUS198', 'DIV': 'N/A', 'HUSB': 'IUS194', 'ID': 'FUS193', 'WIFENAME': 'Joe /Dale/'}]
 
         self.assertFalse(US20({'HUSBNAME': 'Uncle /Dale/', 'CHIL': [], 'MARR': '14 FEB 2000', 'WIFE': 'IUS198', 'DIV': 'N/A', 'HUSB': 'IUS194', 'ID': 'FUS193', 'WIFENAME': 'Joe /Dale/'},listOfFam,listOfPpl))
-        def test_US21(self):
-            self.assertEqual(US21({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'F'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
-        def test_US22(self):
-            self.assertEqual(US22({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'M'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
-        def test_US23(self):
-            self.assertEqual(US23({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
-        def test_US24(self):
-            self.assertEqual(US24({'ID': 'F1', 'HUSBNAME':'Todd', 'WIFENAME':'Dorine', 'MARR':'7 FEB 1983'},[{'ID': 'F2', 'HUSBNAME':'Todd', 'WIFENAME':'Dorine', 'MARR':'7 FEB 1983'}]),False)
-        def test_US25(self):
-            self.assertEqual(US25({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005', 'FAMC':['F1']},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005', 'FAMC':['F1']}]),False)
 
-
-
+    #def test_US21(self):
+        #self.assertEqual(US21({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'F'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
+    #def test_US22(self):
+        #self.assertEqual(US22({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'M'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
+    def test_US23(self):
+        self.assertEqual(US23({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
+    def test_US24(self):
+        self.assertEqual(US24({'ID': 'F1', 'HUSBNAME':'Todd', 'WIFENAME':'Dorine', 'MARR':'7 FEB 1983'},[{'ID': 'F2', 'HUSBNAME':'Todd', 'WIFENAME':'Dorine', 'MARR':'7 FEB 1983'}]),False)
+    def test_US25(self):
+        self.assertEqual(US25({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005', 'FAMC':['F1']},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005', 'FAMC':['F1']}]),False)
+    def test_US34(self):
+        self.assertTrue(US34({'ID':'I1', 'FAMC':['F1'], 'AGE':5}, [{'ID':'F1', 'WIFE':'I2', 'HUSB':'I3'}], [{'ID':'I2','DEAT':'12 NOV 2017'},{'ID':'I3','DEAT':'12 NOV 2017'}]))
+    def test_US35(self):
+        self.assertTrue(US35({'BIRT':'5 NOV 2018'}))
+    def test_US36(self):
+        self.assertTrue(US36({'DEAT':'5 NOV 2018'}))
 
 
 

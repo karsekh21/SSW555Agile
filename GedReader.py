@@ -372,6 +372,41 @@ def US22(ppl, listOfPpl):
     for ppl in listOfPpl:
         rawID = ppl['ID']
 
+
+def US34(ppl, listOfFam,listOfPpl):
+    if(ppl['FAMC']==[]):
+        return False
+    for fam in listOfFam:
+        if(ppl['FAMC'][0]==fam['ID']): 
+            husb = listOfPpl[findPersonInList(fam['HUSB'],listOfPpl)]
+            wife = listOfPpl[findPersonInList(fam['WIFE'],listOfPpl)]
+            if(ppl['AGE']<18 and husb['DEAT']!='N/A' and wife['DEAT']!='N/A'):
+                return True
+            else:
+                return False
+
+
+def US35(ppl):
+    birth=datetime.strptime(ppl['BIRT'], '%d %b %Y')
+    current=datetime.today()
+    if((current-birth).days<=30 and (current-birth).days>=0):
+        return True
+    else:
+        return False
+
+def US36(ppl):
+    if(ppl['DEAT']=='N/A'):
+        return False
+
+    death=datetime.strptime(ppl['DEAT'], '%d %b %Y')
+    current=datetime.today()
+    if((current-death).days<=30 and (current-death).days>=0):
+        return True
+    else:
+        return False
+
+
+
 def find_age(start, end):
     """Parse strings as date objects and compare them to get age"""
     try:
@@ -652,8 +687,11 @@ def print_stuff(listOfPpl,listOfFam):
 
     from prettytable import PrettyTable
 
-    print listOfPpl
-    print listOfFam
+
+    #print listOfPpl
+    #print listOfFam
+
+
 
     ind_table=PrettyTable();
     fam_table=PrettyTable();
@@ -809,6 +847,28 @@ def print_stuff(listOfPpl,listOfFam):
     for ppl in listOfPpl:
         if(US25(ppl,listOfPpl)==False):
             print "Error US25: ",ppl['NAME'],"(",ppl['ID'],") shares a Name and Birthday"
+
+    #US34
+    print "US34 - Individuals that are Orphans: "
+
+    for ppl in listOfPpl:
+        if(US34(ppl,listOfFam,listOfPpl)):
+            print ppl['NAME']," (",ppl['ID'],")"
+
+    #US35
+    print "US35 - Individuals born in last 30 days: "
+
+    for ppl in listOfPpl:
+        if(US35(ppl)):
+            print ppl['NAME']," (",ppl['ID'],")"
+
+    #US36
+    print "US36 - Individuals died in last 30 days: "
+
+    for ppl in listOfPpl:
+        if(US36(ppl)):
+            print ppl['NAME']," (",ppl['ID'],")"
+
 
 
 
