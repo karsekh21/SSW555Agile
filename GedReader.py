@@ -372,12 +372,25 @@ def US22(ppl, listOfPpl):
     for ppl in listOfPpl:
         rawID = ppl['ID']
 
+def US38(Birth):
+    birth=datetime.strptime(Birth, '%d %b %Y')
+    today = datetime.today()
+    birth=birth.replace(year = datetime.today().year)
+
+    return(-0>(today-birth).days>-31)
+
+def US39(anv):
+    anv=datetime.strptime(anv, '%d %b %Y')
+    today = datetime.today()
+    anv=anv.replace(year = datetime.today().year)
+
+    return(-0>(today-anv).days>-31)
 
 def US34(ppl, listOfFam,listOfPpl):
     if(ppl['FAMC']==[]):
         return False
     for fam in listOfFam:
-        if(ppl['FAMC'][0]==fam['ID']): 
+        if(ppl['FAMC'][0]==fam['ID']):
             husb = listOfPpl[findPersonInList(fam['HUSB'],listOfPpl)]
             wife = listOfPpl[findPersonInList(fam['WIFE'],listOfPpl)]
             if(ppl['AGE']<18 and husb['DEAT']!='N/A' and wife['DEAT']!='N/A'):
@@ -848,6 +861,10 @@ def print_stuff(listOfPpl,listOfFam):
         if(US25(ppl,listOfPpl)==False):
             print "Error US25: ",ppl['NAME'],"(",ppl['ID'],") shares a Name and Birthday"
 
+    #US38
+    for ppl in listOfPpl:
+        if(US38(ppl['BIRT'])):
+            print ppl['ID']+" has a birth day soon"
     #US34
     print "US34 - Individuals that are Orphans: "
 
@@ -871,6 +888,10 @@ def print_stuff(listOfPpl,listOfFam):
 
 
 
+    #US39
+    for fam in listOfFam:
+        if(US39(fam['MARR'])):
+            print fam['ID']+" has an Anniversary soon"
 
 
 
