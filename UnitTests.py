@@ -1,7 +1,7 @@
 import unittest
 
 
-from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US19,US20,US21,US22,US23,US24,US25,US34,US35,US36
+from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US19,US20,US21,US22,US23,US24,US25,US34,US35,US36,US38,US39
 
 from GedReader import US01, US02, US03, US04, US05, US06, US07, US08, US09, US12,US14,US15,US16,US17,US18,US19,US20,US21,US22,US23,US24,US25
 
@@ -118,7 +118,10 @@ class TestUserStories(unittest.TestCase):
     def test_US36(self):
         self.assertTrue(US36({'DEAT':'5 NOV 2018'}))
 
-
+    def test_US38(self):
+        self.assertEqual(US38('5 DEC 2006'),True)
+    def test_US39(self):
+        self.assertEqual(US39('5 DEC 2006'),True)
 
 
 #randIndi = {'ID':'N/A','NAME':'N/A','SEX':'N/A','AGE':'N/A','BIRT':'N/A','DEAT':'N/A','FAMC':list(),'FAMS':list(),'ALIVE':True}

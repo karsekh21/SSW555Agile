@@ -861,10 +861,6 @@ def print_stuff(listOfPpl,listOfFam):
         if(US25(ppl,listOfPpl)==False):
             print "Error US25: ",ppl['NAME'],"(",ppl['ID'],") shares a Name and Birthday"
 
-    #US38
-    for ppl in listOfPpl:
-        if(US38(ppl['BIRT'])):
-            print ppl['ID']+" has a birth day soon"
     #US34
     print "US34 - Individuals that are Orphans: "
 
@@ -886,7 +882,10 @@ def print_stuff(listOfPpl,listOfFam):
         if(US36(ppl)):
             print ppl['NAME']," (",ppl['ID'],")"
 
-
+    #US38
+    for ppl in listOfPpl:
+        if(US38(ppl['BIRT'])):
+            print ppl['ID']+" has a birth day soon"
 
     #US39
     for fam in listOfFam:
