@@ -27,7 +27,12 @@ class TestUserStories(unittest.TestCase):
     def test_US09(self):
         self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
     def test_US10(self):
-        self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
+        listOfPpl = []
+        jen = {'BIRT': '23 SEP 1900', 'FAMS': 'F23', 'NAME': 'Jennifer /Smith/', 'ALIVE': True, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I07', 'DEAT': 'N/A', 'SEX': 'F'}
+        jon = {'BIRT': '23 SEP 1900', 'FAMS': 'F23', 'NAME': 'Jon /Smith/', 'ALIVE': True, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I26', 'DEAT': 'N/A', 'SEX': 'F'}
+        listOfPpl.append(jen)
+        listOfPpl.append(jon)
+	self.assertEqual(US10({'ID':'F23','MARR':'4 OCT 2005','DIV':'5 DEC 2006', 'HUSB':'I26', 'WIFE':'I07'}, listOfPpl), True)
     def test_US12(self):
         listOfPpl=[]
         joe = {'BIRT': '15 JUL 1600', 'FAMS': 'F23', 'NAME': 'Joe /Smith/', 'ALIVE': False, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I01', 'DEAT': '31 DEC 1900', 'SEX': 'M'}
@@ -111,6 +116,26 @@ class TestUserStories(unittest.TestCase):
         self.assertEqual(US24({'ID': 'F1', 'HUSBNAME':'Todd', 'WIFENAME':'Dorine', 'MARR':'7 FEB 1983'},[{'ID': 'F2', 'HUSBNAME':'Todd', 'WIFENAME':'Dorine', 'MARR':'7 FEB 1983'}]),False)
     def test_US25(self):
         self.assertEqual(US25({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005', 'FAMC':['F1']},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005', 'FAMC':['F1']}]),False)
+    def test_US29(self):
+        listOfPpl = []
+        deceased = []
+        joe = {'BIRT': '15 JUL 1600', 'FAMS': ['F23','F100'], 'NAME': 'Joe /Smith/', 'ALIVE': False, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I01', 'DEAT': '31 DEC 1900', 'SEX': 'M'}
+        listOfPpl.append(joe)
+        self.assertEqual(US29(listOfPpl, deceased), ['Joe /Smith/'])
+    def test_US30(self):
+        listOfPpl = []
+        livMarr = []
+        jen = {'BIRT': '23 SEP 1900', 'FAMS': ['F23','F100'], 'NAME': 'Jennifer /Smiths/', 'ALIVE': True, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I07', 'DEAT': 'N/A', 'SEX': 'F'}
+        jon = {'BIRT': '23 SEP 1900', 'FAMS': ['F23'], 'NAME': 'Jon /Smith/', 'ALIVE': True, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I26', 'DEAT': 'N/A', 'SEX': 'M'}
+        listOfPpl.append(jen)
+        listOfPpl.append(jon)
+        self.assertEqual(US30(listOfPpl, livMarr), ['Jennifer /Smiths/', 'Jon /Smith/'])
+    def test_US31(self):
+        listOfPpl = []
+        livSing = []
+        jane = {'BIRT': '23 SEP 1900', 'FAMS': [], 'NAME': 'Jane /Smiths/', 'ALIVE': True, 'AGE': 'N/A', 'F23': 'N/A', 'ID': 'I19', 'DEAT': 'N/A', 'SEX': 'M'}
+        listOfPpl.append(jane)
+        self.assertEqual(US31(listOfPpl, livSing), ['Jane /Smiths/'])
     def test_US34(self):
         self.assertTrue(US34({'ID':'I1', 'FAMC':['F1'], 'AGE':5}, [{'ID':'F1', 'WIFE':'I2', 'HUSB':'I3'}], [{'ID':'I2','DEAT':'12 NOV 2017'},{'ID':'I3','DEAT':'12 NOV 2017'}]))
     def test_US35(self):
