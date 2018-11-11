@@ -114,8 +114,8 @@ class TestUserStories(unittest.TestCase):
 
         self.assertFalse(US20({'HUSBNAME': 'Uncle /Dale/', 'CHIL': [], 'MARR': '14 FEB 2000', 'WIFE': 'IUS198', 'DIV': 'N/A', 'HUSB': 'IUS194', 'ID': 'FUS193', 'WIFENAME': 'Joe /Dale/'},listOfFam,listOfPpl))
 
-    #def test_US21(self):
-        #self.assertEqual(US21({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'F'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
+    def test_US21(self):
+        self.assertEqual(US21({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'F', 'FAMS':'F23'},{'ID':'F23', 'HUSB':'I1'}),False)
     #def test_US22(self):
         #self.assertEqual(US22({'ID':'I1', 'NAME':'Matt','BIRT':'2 DEC 2005','SEX':'M'},[{'ID':'I2', 'NAME':'Matt','BIRT':'2 DEC 2005'}]),False)
     def test_US23(self):
