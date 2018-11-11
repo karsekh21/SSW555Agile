@@ -25,7 +25,15 @@ class TestUserStories(unittest.TestCase):
     def test_US08(self):
 		self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
     def test_US09(self):
-        self.assertEqual(US08({'FAMC':['F1'], 'BIRT':'2 DEC 2002'},{'ID':'F1','MARR':'4 OCT 2005','DIV':'5 DEC 2006'}),-1)
+        listOfPpl = []
+        jen = {'BIRT': '23 SEP 1900', 'FAMS': 'F23', 'FAMC':'F24', 'NAME': 'Jennifer /Smith/', 'ALIVE': True, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I07', 'DEAT': 'N/A', 'SEX': 'F'}
+        jon = {'BIRT': '23 SEP 1900', 'FAMS': 'F23', 'FAMC':'F24', 'NAME': 'Jon /Smith/', 'ALIVE': False, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I26', 'DEAT': '23 SEP 1998', 'SEX': 'F'}
+        james = {'BIRT': '23 SEP 2011', 'NAME': 'Jon /Smith/', 'ALIVE': True, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I27', 'DEAT': 'N/A', 'SEX': 'F'}
+        fam = {'ID':'F23', 'HUSB':'I26', 'WIFE':'I07', 'CHIL':'I27'}
+        listOfPpl.append(jen)
+        listOfPpl.append(jon)
+        listOfPpl.append(james)
+        self.assertEqual(US09(fam, listOfPpl), False)
     def test_US10(self):
         listOfPpl = []
         jen = {'BIRT': '23 SEP 1900', 'FAMS': 'F23', 'NAME': 'Jennifer /Smith/', 'ALIVE': True, 'AGE': 'N/A', 'FAMC': 'N/A', 'ID': 'I07', 'DEAT': 'N/A', 'SEX': 'F'}
