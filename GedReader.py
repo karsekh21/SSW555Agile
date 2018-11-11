@@ -372,6 +372,29 @@ def US22(ppl, listOfPpl):
     for ppl in listOfPpl:
         rawID = ppl['ID']
 
+def US29(listOfPpl, deceased):
+    deceased = []
+    for ppl in listOfPpl:
+        if ppl['DEAT'] != 'N/A':
+            deceased.append(ppl['NAME'])
+    return deceased
+
+def US30(listOfPpl, livingMarried):
+    livingMarried = []
+    for ppl in listOfPpl:
+        if ppl['DEAT'] == 'N/A':
+            if len(ppl['FAMS']) != 0:
+                livingMarried.append(ppl['NAME'])
+    return livingMarried
+
+def US31(listOfPpl, livingSingle):
+    livingSingle = []
+    for ppl in listOfPpl:
+        if ppl['DEAT'] == 'N/A':
+            if len(ppl['FAMS']) == 0:
+                livingSingle.append(ppl['NAME'])
+    return livingSingle	
+	
 def US38(Birth):
     birth=datetime.strptime(Birth, '%d %b %Y')
     today = datetime.today()
@@ -860,6 +883,23 @@ def print_stuff(listOfPpl,listOfFam):
     for ppl in listOfPpl:
         if(US25(ppl,listOfPpl)==False):
             print "Error US25: ",ppl['NAME'],"(",ppl['ID'],") shares a Name and Birthday"
+	
+    #US29
+    print('List of Deceased: ')
+    deceased = []
+    print(US29(listOfPpl, deceased))
+    
+
+    #US30
+    print('List of Living and Married people: ')
+    livMarr = []
+    print(US30(listOfPpl, livMarr))
+
+    #US31
+    print('List of Living Single people: ')
+    livSing = []
+    print(US31(listOfPpl, livSing))
+
 
     #US34
     print "US34 - Individuals that are Orphans: "
