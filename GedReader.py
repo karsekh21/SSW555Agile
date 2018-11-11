@@ -131,6 +131,8 @@ def saveInfo(listOfPpl,listOfFam,lines):
 #calculate_age takes in the year born and the year wanted to calc age
 #calculates the age of the current individual
 #returns the age of the current individual
+
+#US27
 def calculate_age(born,upTo):
     if((upTo.month, upTo.day) < (born.month, born.day)):
         return upTo.year - born.year - 1
@@ -368,9 +370,10 @@ def US21(ppl, fam):
     else:
         return False
 
-def US22(ppl, listOfPpl):
-    for ppl in listOfPpl:
-        rawID = ppl['ID']
+def US22(ppl, identities):
+    if len(identities) != len(set(identities)):
+        return False
+    return True
 
 def US29(listOfPpl, deceased):
     deceased = []
@@ -732,7 +735,7 @@ def print_stuff(listOfPpl,listOfFam):
     ind_table=PrettyTable();
     fam_table=PrettyTable();
 
-    ind_table.field_names=["ID","Name","Gender","Birthday","Age","Alive","Death","Child","Spouse"]
+    ind_table.field_names=["ID","Name","Gender","Birthday","Age (US27)","Alive","Death","Child","Spouse"]
     fam_table.field_names = ["ID", "Married", "Divorced", "Husband ID", "Husband Name", "Wife ID", "Wife Name", "Children"]
      #Creates the table of all families
     for fam in listOfFam:
@@ -761,35 +764,43 @@ def print_stuff(listOfPpl,listOfFam):
 		for fam in listOfFam:
 			if(US01(ppl,fam)==False):
 				print "Error US01: Dates of ",ppl['NAME'],"(",ppl['ID'],") occur after current date in Family ",fam['ID'],"."
-	#US02
+    print "\n"
+    #US02
     for ppl in listOfPpl:
 		for fam in listOfFam:
 			if(US02(ppl,fam)==False):
 				print "Error US02: Birth of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her marriage in Family ",fam['ID'],"."
 
+    print "\n"
+
     for ppl in listOfPpl:
 		for fam in listOfFam:
 			if(US03(ppl)==False):
 				print "Error US03: Birth of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her death."
+    print "\n"
     #US04
     for fam in listOfFam:
     	if(US04(fam)==False):
     		print "Error US04: Divorce date occurs before marriage date in Family ",fam['ID'],"."
+    print "\n"
     #US05
-	for ppl in listOfPpl:
+    for ppl in listOfPpl:
 		for fam in listOfFam:
 			if(US05(ppl,fam)==False):
 				print "Error US05: Marriage date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her death date in Family ",fam['ID'],"."
-	#US06
-	for ppl in listOfPpl:
+    print "\n"
+    #US06
+    for ppl in listOfPpl:
 		for fam in listOfFam:
 			if(US06(ppl,fam)==False):
 				print "Error US06: Divorce date of ",ppl['NAME'],"(",ppl['ID'],") occurs after his/her death date in Family ",fam['ID'],"."
-	#US07
-	for ppl in listOfPpl:
+    print "\n"
+    #US07
+    for ppl in listOfPpl:
 		if(US07(ppl['AGE'])==False):
 			print "Error US07: ",ppl['NAME'],"(",ppl['ID'],") is more than 150 years old"
-	#US08
+    print "\n"
+    #US08
     for ppl in listOfPpl:
         for fam in listOfFam:
             if(US08(ppl,fam)==0):
@@ -797,12 +808,14 @@ def print_stuff(listOfPpl,listOfFam):
             if(US08(ppl,fam)==-1):
               print "Error US08: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs before parents' marriage date in Family ",fam['ID'],"."
 
+    print "\n"
     #US09
     for ppl in listOfPpl:
         for fam in listOfFam:
             if US09(ppl, fam, listOfPpl):
                 print "Error US09: Birth date of ",ppl['NAME'],"(",ppl['ID'],") occurs before conception in Family ",fam['ID'],"."
 
+    print "\n"
     #US10
     for ppl in listOfPpl:
         for fam in listOfFam:
@@ -815,28 +828,33 @@ def print_stuff(listOfPpl,listOfFam):
     #         if not US11(ppl, fam):
     #             print "Error US11: " + ppl['ID'] + " " + ppl['NAME'] + " is married to multiple people."
 
+    print "\n"
     #US12
     for fam in listOfFam:
         if US12(fam,listOfPpl):
             print 'Error US12: A mom is 60 yrs older then child or a dad is 80 yrs older then child in Family '+fam['ID']
 
+    print "\n"
     #US14
     for fam in listOfFam:
         if len(fam['CHIL']) >=5:
             if(not US14(listOfPpl,fam['CHIL'])):
                 print "Error US14: 5 siblings with the same birthdate in family "+ fam['ID']
 
+    print "\n"
     #US15
     for fam in listOfFam:
         if US15(fam):
             print "Error US15: More then 15 siblings in the family "+ fam['ID']
 
+    print "\n"
     #US16
     for ppl in listOfPpl:
         for fam in listOfFam:
             if (US16(ppl, fam,listOfPpl) == False):
                 print "Error US16: " +ppl['NAME'],"(",ppl['ID'],")"+ " is not consistent with " + fam['ID'] + " last names"
 
+    print "\n"
     #US17
     for ppl in listOfPpl:
         for fam in listOfFam:
@@ -844,63 +862,76 @@ def print_stuff(listOfPpl,listOfFam):
                 print "Error US17: "+ppl['NAME'],"(",ppl['ID'],")"+ " is married to a descendent"
                 break
 
+    print "\n"
     #US18
     for ppl in listOfPpl:
         if (US18(ppl,listOfPpl)==False):
             print "Error US18: ",ppl['NAME'],"(",ppl['ID'],") is married to sibling"
 
+    print "\n"
     #US19
     for fam in listOfFam:
         if not (US19(fam,listOfFam,listOfPpl)):
             print "Error US19: Family "+fam['ID']+" has first cousins that are married."
 
+    print "\n"
     #US20
     for fam in listOfFam:
         if not (US20(fam,listOfFam,listOfPpl)):
             print "Error US20: Family "+fam['ID']+" has first a niece/nephew married to a Uncle/Aunt."
 
+    print "\n"
     #US21
     for ppl in listOfPpl:
         for fam in listOfFam:
             if US21(ppl, fam) == False:
                 print "Error US21: "+ppl['NAME'],"(",ppl['ID'],")"+ " is not the correct gender"
+    print "\n"
     #US22
+    identities = []
     for ppl in listOfPpl:
-        for fam in listOfFam:
-            if US22(ppl, listOfPpl) == False:
-                print "Error US22: "+ppl['NAME'],"(",ppl['ID'],")"+ " has an inconsistent ID"
+        identities = ppl['ID']
+        if US22(ppl, identities) == False:
+            print "Error US22: There are duplicate IDs for ID="+ppl['ID']
 
+    print "\n"
     #US23
     for ppl in listOfPpl:
         if(US23(ppl,listOfPpl)==False):
             print "Error US23: ",ppl['NAME'],"(",ppl['ID'],") does not have a unique name and birthday"
 
+    print "\n"
     #US24
     for fam in listOfFam:
         if(US24(fam,listOfFam)==False):
             print "Error US24: Fam(",fam['ID'],") does not have unique couple names and marriage date"
+    print "\n"
     #US25
     for ppl in listOfPpl:
         if(US25(ppl,listOfPpl)==False):
             print "Error US25: ",ppl['NAME'],"(",ppl['ID'],") shares a Name and Birthday"
 	
+    print "\n"
     #US29
-    print('List of Deceased: ')
+    print('US29 - List of Deceased: ')
     deceased = []
     print(US29(listOfPpl, deceased))
     
 
+    print "\n"
     #US30
-    print('List of Living and Married people: ')
+    print('US30 - List of Living and Married people: ')
     livMarr = []
     print(US30(listOfPpl, livMarr))
 
+    print "\n"
     #US31
-    print('List of Living Single people: ')
+    print('US31 - List of Living Single people: ')
     livSing = []
     print(US31(listOfPpl, livSing))
 
 
+    print "\n"
     #US34
     print "US34 - Individuals that are Orphans: "
 
@@ -908,13 +939,16 @@ def print_stuff(listOfPpl,listOfFam):
         if(US34(ppl,listOfFam,listOfPpl)):
             print ppl['NAME']," (",ppl['ID'],")"
 
+    print "\n"
     #US35
     print "US35 - Individuals born in last 30 days: "
 
+    print "\n"
     for ppl in listOfPpl:
         if(US35(ppl)):
             print ppl['NAME']," (",ppl['ID'],")"
 
+    print "\n"
     #US36
     print "US36 - Individuals died in last 30 days: "
 
@@ -922,12 +956,16 @@ def print_stuff(listOfPpl,listOfFam):
         if(US36(ppl)):
             print ppl['NAME']," (",ppl['ID'],")"
 
+    print "\n"
     #US38
+    print "US38 - Individuals with birthdays in next 30 days: "
     for ppl in listOfPpl:
         if(US38(ppl['BIRT'])):
             print ppl['ID']+" has a birth day soon"
 
+    print "\n"
     #US39
+    print "US39 - Families with anniversaries in next 30 days: "
     for fam in listOfFam:
         if(US39(fam['MARR'])):
             print fam['ID']+" has an Anniversary soon"
